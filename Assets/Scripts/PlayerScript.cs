@@ -5,6 +5,7 @@ public class PlayerScript : MonoBehaviour
 {
     float horizontal; 
     float vertical;
+    public bool isFacingRight = true;
     Rigidbody2D rb;
     BoxCollider2D boxCollider; 
 
@@ -13,8 +14,11 @@ public class PlayerScript : MonoBehaviour
     private float speed;
     [SerializeField]
     private float jumpSpeed;
+    [SerializeField] private float wallSlidingSpeed = 2f, wallJumpDir, wallJumpTime = 0.2f, wallJumpCount, wallJumpDur = 0.4f; public float jumpingPower = 15f;
+    public bool isWallSliding, isWallJump;
+    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    public LayerMask groundLayer;
+    public LayerMask groundLayer, wallLayer;
 
     public GameObject mirroredPlayer;
 
@@ -43,12 +47,14 @@ public class PlayerScript : MonoBehaviour
         {
             mirrorRb.linearVelocity = new Vector2(horizontal * -speed, rb.linearVelocity.y);
 
-            if (isGrounded(boxCollider) && !isGrounded(mirrorCollider))
+            if (IsGrounded(boxCollider) && !IsGrounded(mirrorCollider))
             {
                 mirrorRb.linearVelocity = new Vector2(horizontal * -speed, -8);
             }
         }
-            
+        WallSlide();
+
+        Flip();
 
     }
 
@@ -60,7 +66,7 @@ public class PlayerScript : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed && isGrounded(boxCollider))
+        if (context.performed && IsGrounded(boxCollider))
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
         }
@@ -100,9 +106,58 @@ public class PlayerScript : MonoBehaviour
         
     }
 
-    public bool isGrounded(BoxCollider2D boxCollider)
+    private void WallSlide()
+    {
+        if (IsWalled(boxCollider) && !IsGrounded(boxCollider) && horizontal != 0f)
+        {
+            print("Sliding");
+            isWallSliding = true;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+
+    private void Flip()
+    {
+        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector2 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
+    }
+
+    public bool IsGrounded(BoxCollider2D boxCollider)
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.05f, groundLayer);
-        return hit.collider != null;
+        if (hit.collider != null)
+        {
+            print("Grounded");
+            return true;
+        }
+        else
+        {
+            print("Not Grounded");
+            return false;
+        }
+    }
+
+    public bool IsWalled(BoxCollider2D boxCollider)
+    {
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, transform.localScale, 0.05f, wallLayer);
+        if (hit.collider != null)
+        {
+            print("Walled");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
