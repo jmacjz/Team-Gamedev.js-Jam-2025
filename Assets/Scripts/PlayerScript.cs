@@ -27,6 +27,7 @@ public class PlayerScript : MonoBehaviour
     public bool mirrored = false;
     public bool canMove;
     BoxCollider2D mirrorCollider;
+    MirroredPlayer mirrorScript; // script for mirrored player
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,6 +36,7 @@ public class PlayerScript : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
         mirrorCollider = mirroredPlayer.GetComponent<BoxCollider2D>();
+        mirrorScript = mirroredPlayer.GetComponent<MirroredPlayer>();
         mirroredPlayer.SetActive(false);
     }
 
@@ -59,7 +61,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (context.performed)
         {
-            mirroredPlayer.GetComponent<MirroredPlayer>().Jump();
+            mirrorScript.Jump();
 
             if(IsGrounded(boxCollider)) 
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
@@ -87,14 +89,14 @@ public class PlayerScript : MonoBehaviour
 
     public void FreezeMirror(InputAction.CallbackContext context)
     {
-        if (context.performed && canMove)
+        if (context.performed && mirrorScript.canMove)
         {
-            canMove = false;
+            mirrorScript.canMove = false;
         }
 
-        else if (context.performed && !canMove)
+        else if (context.performed && !mirrorScript.canMove)
         {
-            canMove = true;
+            mirrorScript.canMove = true;
         }
 
         

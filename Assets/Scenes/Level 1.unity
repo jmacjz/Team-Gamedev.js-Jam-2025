@@ -1097,9 +1097,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpSpeed: 15
+  wallSlidingSpeed: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  isFacingRight: 1
+  isWallSliding: 0
+  canMove: 0
 --- !u!1 &1870898818
 GameObject:
   m_ObjectHideFlags: 0

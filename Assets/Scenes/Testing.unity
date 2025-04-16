@@ -1352,6 +1352,7 @@ GameObject:
   - component: {fileID: 1826471772}
   - component: {fileID: 1826471775}
   - component: {fileID: 1826471774}
+  - component: {fileID: 1826471776}
   m_Layer: 0
   m_Name: Mirrored Player
   m_TagString: Untagged
@@ -1503,6 +1504,29 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1826471776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826471771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 163400bb0ca94584fa4afd25b2d12e89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpSpeed: 15
+  wallSlidingSpeed: 2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 192
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  isFacingRight: 0
+  isWallSliding: 0
+  canMove: 0
 --- !u!1 &2118311482
 GameObject:
   m_ObjectHideFlags: 0

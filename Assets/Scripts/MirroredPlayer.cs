@@ -5,12 +5,16 @@ public class MirroredPlayer : MonoBehaviour
     GameObject player;
     Rigidbody2D rb;
     Rigidbody2D playerRb;
-    bool canJump;
     BoxCollider2D boxCollider;
+
     [SerializeField]
-    private float jumpSpeed;
+    private float jumpSpeed, wallSlidingSpeed;
     [SerializeField]
-    private LayerMask groundLayer;
+    private LayerMask groundLayer, wallLayer;
+    [SerializeField]
+    private bool isFacingRight, isWallSliding;
+
+    public bool canMove;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,14 +29,43 @@ public class MirroredPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
+        if (canMove)
+            rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
     }
 
     public void Jump()
     {
-        if (IsGrounded(boxCollider))
+        if (IsGrounded(boxCollider) && canMove)
         {
             rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, jumpSpeed);
+        }
+    }
+
+    
+
+    private void WallSlide()
+    {
+        if (IsWalled(boxCollider) && !IsGrounded(boxCollider))
+        {
+            print("Sliding");
+            isWallSliding = true;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+
+    private void Flip()
+    {
+        if (isFacingRight && rb.linearVelocity.x < 0 || !isFacingRight && rb.linearVelocity.x > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector2 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
         }
     }
 
@@ -45,7 +78,21 @@ public class MirroredPlayer : MonoBehaviour
         }
         else
             return false;
-        
+
+    }
+
+    public bool IsWalled(BoxCollider2D boxCollider)
+    {
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, transform.localScale, 0.05f, wallLayer);
+        if (hit.collider != null)
+        {
+            print("Walled");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
