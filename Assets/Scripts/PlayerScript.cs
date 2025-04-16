@@ -1,13 +1,23 @@
+using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
-    float horizontal; 
+    float horizontal;
     float vertical;
     public bool isFacingRight = true;
     Rigidbody2D rb;
-    BoxCollider2D boxCollider; 
+    BoxCollider2D boxCollider;
+
+
+    [SerializeField] int startingHealth;
+    private float currentHealth;
+    private bool dead;
+    [SerializeField] float invulnDuration;
+    [SerializeField] int flashNumber;
+    private SpriteRenderer spriteRend;
 
 
     [SerializeField]
@@ -18,7 +28,7 @@ public class PlayerScript : MonoBehaviour
     public bool isWallSliding, isWallJump;
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    public LayerMask groundLayer, wallLayer;
+    public LayerMask groundLayer, wallLayer, trapLayer;
 
     public GameObject mirroredPlayer;
 
@@ -27,7 +37,6 @@ public class PlayerScript : MonoBehaviour
     public bool mirrored = false;
     public bool canMove;
     BoxCollider2D mirrorCollider;
-    MirroredPlayer mirrorScript; // script for mirrored player
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,19 +45,35 @@ public class PlayerScript : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
         mirrorCollider = mirroredPlayer.GetComponent<BoxCollider2D>();
-        mirrorScript = mirroredPlayer.GetComponent<MirroredPlayer>();
         mirroredPlayer.SetActive(false);
+        spriteRend = GetComponent<SpriteRenderer>();
+        currentHealth = startingHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
         rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+        if (dead == false)
+            canMove = true;
+        else
+        {
+            canMove = false;
+            gameObject.SetActive(false);
+        }
 
-        WallSlide();
+        if (canMove)
+        {
+            mirrorRb.linearVelocity = new Vector2(horizontal * -speed, rb.linearVelocity.y);
 
-        Flip();
+            if (IsGrounded(boxCollider) && !IsGrounded(mirrorCollider))
+            {
+                mirrorRb.linearVelocity = new Vector2(horizontal * -speed, -8);
+            }
+            WallSlide();
 
+            Flip();
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -59,21 +84,51 @@ public class PlayerScript : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && IsGrounded(boxCollider))
         {
-            mirrorScript.Jump();
-
-            if(IsGrounded(boxCollider)) 
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
-            
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
         }
-        
+    }
+
+    public IEnumerator Invulnerability()
+    {
+        Physics2D.IgnoreLayerCollision(0, 9, true);
+        //So the player cannot be harmed by traps
+
+        for (int i = 0; i < flashNumber; i++)
+        {
+            spriteRend.color = new Color(1, 0, 0, 0.5f);
+            yield return new WaitForSeconds(invulnDuration / (flashNumber * 2));
+            spriteRend.color = Color.white;
+            yield return new WaitForSeconds(invulnDuration / (flashNumber * 2));
+        }
+        Physics2D.IgnoreLayerCollision(0, 9, false);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth = Mathf.Clamp(currentHealth - damage, 0, startingHealth);
+
+        if (currentHealth > 0)
+            StartCoroutine(Invulnerability());
+        else
+        {
+            if (!dead)
+                dead = true;
+        }
+            
+    }
+
+    public void Heal(float value)
+    {
+        currentHealth = Mathf.Clamp(currentHealth + value, 0, startingHealth);
     }
 
     public void Mirror(InputAction.CallbackContext context)
     {
         if (context.performed && !mirrored)
         {
+            Debug.Log("mirror");
             mirrored = true;
             mirroredPlayer.SetActive(true);
             mirroredPlayer.transform.position = transform.position + new Vector3(5, 0, 0);
@@ -82,6 +137,7 @@ public class PlayerScript : MonoBehaviour
 
         else if (context.performed && mirrored)
         {
+            Debug.Log("not ");
             mirrored = false;
             mirroredPlayer.SetActive(false);
         }
@@ -89,14 +145,14 @@ public class PlayerScript : MonoBehaviour
 
     public void FreezeMirror(InputAction.CallbackContext context)
     {
-        if (context.performed && mirrorScript.canMove)
+        if (context.performed && canMove)
         {
-            mirrorScript.canMove = false;
+            canMove = false;
         }
 
-        else if (context.performed && !mirrorScript.canMove)
+        else if (context.performed && !canMove)
         {
-            mirrorScript.canMove = true;
+            canMove = true;
         }
 
         
