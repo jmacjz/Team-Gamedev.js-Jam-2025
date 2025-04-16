@@ -19,6 +19,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] int flashNumber;
     private SpriteRenderer spriteRend;
 
+    private bool inDoor; // boolean for when the player is touching the door/button that completes the level (just calling it door for now)
+
 
     [SerializeField]
     private float speed;
@@ -37,6 +39,7 @@ public class PlayerScript : MonoBehaviour
     public bool mirrored = false;
     public bool canMove;
     BoxCollider2D mirrorCollider;
+    MirroredPlayer mirrorScript; // script for mirrored player
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,6 +48,7 @@ public class PlayerScript : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
         mirrorCollider = mirroredPlayer.GetComponent<BoxCollider2D>();
+        mirrorScript = mirroredPlayer.GetComponent<MirroredPlayer>();
         mirroredPlayer.SetActive(false);
         spriteRend = GetComponent<SpriteRenderer>();
         currentHealth = startingHealth;
@@ -53,7 +57,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+        
         if (dead == false)
             canMove = true;
         else
@@ -64,15 +68,16 @@ public class PlayerScript : MonoBehaviour
 
         if (canMove)
         {
-            mirrorRb.linearVelocity = new Vector2(horizontal * -speed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
 
-            if (IsGrounded(boxCollider) && !IsGrounded(mirrorCollider))
-            {
-                mirrorRb.linearVelocity = new Vector2(horizontal * -speed, -8);
-            }
             WallSlide();
 
             Flip();
+        }
+
+        if (inDoor && mirrorScript.inDoor == true)
+        {
+            Debug.Log("You Beat The Level");
         }
     }
 
@@ -84,9 +89,14 @@ public class PlayerScript : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed && IsGrounded(boxCollider))
+
+        if (context.performed)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+            mirrorScript.Jump();
+            if (IsGrounded(boxCollider))
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+            }
         }
     }
 
@@ -128,7 +138,6 @@ public class PlayerScript : MonoBehaviour
     {
         if (context.performed && !mirrored)
         {
-            Debug.Log("mirror");
             mirrored = true;
             mirroredPlayer.SetActive(true);
             mirroredPlayer.transform.position = transform.position + new Vector3(5, 0, 0);
@@ -137,7 +146,6 @@ public class PlayerScript : MonoBehaviour
 
         else if (context.performed && mirrored)
         {
-            Debug.Log("not ");
             mirrored = false;
             mirroredPlayer.SetActive(false);
         }
@@ -145,14 +153,14 @@ public class PlayerScript : MonoBehaviour
 
     public void FreezeMirror(InputAction.CallbackContext context)
     {
-        if (context.performed && canMove)
+        if (context.performed && mirrorScript.canMove)
         {
-            canMove = false;
+            mirrorScript.canMove = false;
         }
 
-        else if (context.performed && !canMove)
+        else if (context.performed && !mirrorScript.canMove)
         {
-            canMove = true;
+            mirrorScript.canMove = true;
         }
 
         
@@ -181,6 +189,22 @@ public class PlayerScript : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.layer == 10)
+        {
+            inDoor = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.layer == 10)
+        {
+            inDoor = false;
         }
     }
 

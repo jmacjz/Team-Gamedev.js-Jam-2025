@@ -16,6 +16,8 @@ public class MirroredPlayer : MonoBehaviour
 
     public bool canMove;
 
+    public bool inDoor;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -66,6 +68,22 @@ public class MirroredPlayer : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.layer == 11)
+        {
+            inDoor = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.layer == 11)
+        {
+            inDoor = false;
         }
     }
 
