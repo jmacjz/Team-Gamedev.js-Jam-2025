@@ -43,15 +43,6 @@ public class PlayerScript : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
 
-        if (canMove)
-        {
-            mirrorRb.linearVelocity = new Vector2(horizontal * -speed, rb.linearVelocity.y);
-
-            if (IsGrounded(boxCollider) && !IsGrounded(mirrorCollider))
-            {
-                mirrorRb.linearVelocity = new Vector2(horizontal * -speed, -8);
-            }
-        }
         WallSlide();
 
         Flip();
@@ -66,17 +57,21 @@ public class PlayerScript : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (context.performed && IsGrounded(boxCollider))
+        if (context.performed)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+            mirroredPlayer.GetComponent<MirroredPlayer>().Jump();
+
+            if(IsGrounded(boxCollider)) 
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+            
         }
+        
     }
 
     public void Mirror(InputAction.CallbackContext context)
     {
         if (context.performed && !mirrored)
         {
-            Debug.Log("mirror");
             mirrored = true;
             mirroredPlayer.SetActive(true);
             mirroredPlayer.transform.position = transform.position + new Vector3(5, 0, 0);
@@ -85,7 +80,6 @@ public class PlayerScript : MonoBehaviour
 
         else if (context.performed && mirrored)
         {
-            Debug.Log("not ");
             mirrored = false;
             mirroredPlayer.SetActive(false);
         }
