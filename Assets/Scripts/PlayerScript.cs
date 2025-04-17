@@ -30,7 +30,6 @@ public class PlayerScript : MonoBehaviour
     public bool isWallSliding, isWallJump;
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    public LayerMask groundLayer, wallLayer;
     public LayerMask groundLayer, wallLayer, trapLayer;
 
     public GameObject mirroredPlayer;
