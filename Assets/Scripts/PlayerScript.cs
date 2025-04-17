@@ -21,7 +21,7 @@ public class PlayerScript : MonoBehaviour
 
     private bool inDoor; // boolean for when the player is touching the door/button that completes the level (just calling it door for now)
 
-
+    // hi
     [SerializeField]
     private float speed;
     [SerializeField]
