@@ -81,7 +81,7 @@ public class MirroredPlayer : MonoBehaviour
     {
         if (IsWalled(boxCollider) && !IsGrounded(boxCollider))
         {
-            print("Sliding");
+            print("Mirror Sliding");
             isWallSliding = true;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
         }
