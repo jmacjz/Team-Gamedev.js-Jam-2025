@@ -873,7 +873,7 @@ Transform:
   m_GameObject: {fileID: 853759199}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.51, z: 0}
+  m_LocalPosition: {x: 0, y: 0.527, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1964,6 +1964,12 @@ MonoBehaviour:
     m_Bits: 128
   isFacingRight: 0
   isWallSliding: 0
+  isWallJump: 0
+  wallJumpDir: 0
+  wallJumpTime: 0.2
+  wallJumpCount: 0
+  wallJumpDur: 0.4
+  jumpingPower: 15
   canMove: 0
   inDoor: 0
 --- !u!1 &2118311482
