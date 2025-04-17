@@ -22,11 +22,14 @@ public class MirroredPlayer : MonoBehaviour
 
     public bool inDoor;
 
+    private bool onMovingPlatform;
+    private GameObject movingPlatform;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         player = GameObject.Find("Player");
-
+        movingPlatform = GameObject.Find("Moving Platform");
         rb = GetComponent<Rigidbody2D>();
         playerRb = player.GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
@@ -42,8 +45,21 @@ public class MirroredPlayer : MonoBehaviour
 
         if (!isWallJump && canMove)
         {
-            if (canMove)
-                rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
+
+            if (!onMovingPlatform)
+            {
+                if(player.GetComponent<PlayerScript>().onMovingPlatform == true)
+                    rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x + movingPlatform.GetComponent<MovingPlatform>().moveSpeed, rb.linearVelocity.y);               
+                else
+                    rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
+            }
+                    
+            else
+            {
+                rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x + movingPlatform.GetComponent<MovingPlatform>().moveSpeed, rb.linearVelocity.y);
+            }
+            
+                
             Flip();
         }
         
@@ -139,6 +155,23 @@ public class MirroredPlayer : MonoBehaviour
         if (col.gameObject.layer == 11)
         {
             inDoor = false;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.name.Contains("Moving Platform"))
+        {
+            movingPlatform = col.gameObject;
+            onMovingPlatform = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D col)
+    {
+        if (col.gameObject.name.Contains("Moving Platform"))
+        {
+            onMovingPlatform = false;
         }
     }
 

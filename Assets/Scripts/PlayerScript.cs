@@ -41,6 +41,9 @@ public class PlayerScript : MonoBehaviour
     BoxCollider2D mirrorCollider;
     MirroredPlayer mirrorScript; // script for mirrored player
 
+    public bool onMovingPlatform;
+    private GameObject movingPlatform;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -70,7 +73,12 @@ public class PlayerScript : MonoBehaviour
 
         if (!isWallJump)
         {
-            rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+            if (!onMovingPlatform)
+                rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+            else
+            {
+                rb.linearVelocity = new Vector2(horizontal * speed + movingPlatform.GetComponent<MovingPlatform>().moveSpeed, rb.linearVelocity.y);
+            }
 
             Flip();
         }
@@ -101,12 +109,6 @@ public class PlayerScript : MonoBehaviour
                 //hold to full jump height
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
             }
-        }
-
-        else if (context.canceled)
-        {
-            //light tap for short hop
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
         }
 
         if (context.performed && wallJumpCount > 0f)
@@ -237,6 +239,23 @@ public class PlayerScript : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.name.Contains("Moving Platform"))
+        {
+            movingPlatform = col.gameObject;
+            onMovingPlatform = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D col)
+    {
+        if (col.gameObject.name.Contains("Moving Platform"))
+        {
+            onMovingPlatform = false;
         }
     }
 
