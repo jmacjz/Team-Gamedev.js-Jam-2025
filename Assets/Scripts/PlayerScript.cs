@@ -57,7 +57,6 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-<<<<<<< HEAD
         WallSlide();
         ProcessWallJump();
 
@@ -73,18 +72,7 @@ public class PlayerScript : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
 
-            if (canMove)
-            {
-                mirrorRb.linearVelocity = new Vector2(horizontal * -speed, rb.linearVelocity.y);
-
-                if (IsGrounded(boxCollider) && !IsGrounded(mirrorCollider))
-                {
-                    mirrorRb.linearVelocity = new Vector2(horizontal * -speed, -8);
-                }
-            }
-
             Flip();
-=======
         }
         
 
@@ -93,7 +81,6 @@ public class PlayerScript : MonoBehaviour
         if (inDoor && mirrorScript.inDoor == true)
         {
             Debug.Log("You Beat The Level");
->>>>>>> 32c6c8bf712835beddaeb9e1c9764e8d5eb56298
         }
     }
 
@@ -107,18 +94,15 @@ public class PlayerScript : MonoBehaviour
     {
 
         if (context.performed)
-        {
-<<<<<<< HEAD
-            //hold to full jump height
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
-=======
+        {   
             mirrorScript.Jump();
             if (IsGrounded(boxCollider))
             {
+                //hold to full jump height
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
             }
->>>>>>> 32c6c8bf712835beddaeb9e1c9764e8d5eb56298
         }
+
         else if (context.canceled)
         {
             //light tap for short hop
