@@ -41,21 +41,25 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
-
-        if (canMove)
-        {
-            mirrorRb.linearVelocity = new Vector2(horizontal * -speed, rb.linearVelocity.y);
-
-            if (IsGrounded(boxCollider) && !IsGrounded(mirrorCollider))
-            {
-                mirrorRb.linearVelocity = new Vector2(horizontal * -speed, -8);
-            }
-        }
         WallSlide();
+        ProcessWallJump();
 
-        Flip();
+        if (!isWallJump)
+        {
+            rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
 
+            if (canMove)
+            {
+                mirrorRb.linearVelocity = new Vector2(horizontal * -speed, rb.linearVelocity.y);
+
+                if (IsGrounded(boxCollider) && !IsGrounded(mirrorCollider))
+                {
+                    mirrorRb.linearVelocity = new Vector2(horizontal * -speed, -8);
+                }
+            }
+
+            Flip();
+        }
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -68,7 +72,31 @@ public class PlayerScript : MonoBehaviour
     {
         if (context.performed && IsGrounded(boxCollider))
         {
+            //hold to full jump height
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+        }
+        else if (context.canceled)
+        {
+            //light tap for short hop
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+        }
+
+        if (context.performed && wallJumpCount > 0f)
+        {
+            isWallJump = true;
+            rb.linearVelocity = new Vector2(wallJumpDir * wallJumpingPower.x, wallJumpingPower.y); //jump away from wall
+            wallJumpCount = 0;
+
+            // Force Flip
+            if (transform.localScale.x != wallJumpDir)
+            {
+                isFacingRight = !isFacingRight;
+                Vector2 localScale = transform.localScale;
+                localScale.x *= -1f;
+                transform.localScale = localScale;
+            }
+
+            Invoke(nameof(CancelWallJump), wallJumpDur); // Wall jump + 0.5f -- Jump again = 0.6f
         }
     }
 
@@ -112,7 +140,7 @@ public class PlayerScript : MonoBehaviour
         {
             print("Sliding");
             isWallSliding = true;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Max(rb.linearVelocity.y, -wallSlidingSpeed));
         }
         else
         {
@@ -120,6 +148,26 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void ProcessWallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallJump = false;
+            wallJumpDir = -transform.localScale.x;
+            wallJumpCount = wallJumpTime;
+
+            CancelInvoke(nameof(CancelWallJump));
+        }
+        else if (wallJumpCount > 0f)
+        {
+            wallJumpCount -= Time.deltaTime;
+        }
+    }
+
+    private void CancelWallJump()
+    {
+        isWallJump = false;
+    }
 
     private void Flip()
     {
