@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,6 +11,7 @@ public class PlayerScript : MonoBehaviour
     public bool isFacingRight = true;
     Rigidbody2D rb;
     BoxCollider2D boxCollider;
+    [SerializeField] Transform spawnPoint;
 
 
     [SerializeField] int startingHealth;
@@ -37,7 +39,7 @@ public class PlayerScript : MonoBehaviour
     Rigidbody2D mirrorRb;
 
     public bool mirrored = false;
-    public bool canMove;
+    public bool canMove, canJump;
     BoxCollider2D mirrorCollider;
     MirroredPlayer mirrorScript; // script for mirrored player
 
@@ -47,6 +49,9 @@ public class PlayerScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        canMove = true;
+        canJump = true;
+        
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
@@ -63,15 +68,13 @@ public class PlayerScript : MonoBehaviour
         WallSlide();
         ProcessWallJump();
 
-        if (dead == false)
-            canMove = true;
-        else
+        if (dead == true)
         {
-            canMove = false;
-            gameObject.SetActive(false);
+            DespawnPlayer();
+            StartCoroutine(RespawnPlayer());
         }
 
-        if (!isWallJump)
+        if (!isWallJump && canMove)
         {
             if (!onMovingPlatform)
                 rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
@@ -94,39 +97,45 @@ public class PlayerScript : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        horizontal = context.ReadValue<Vector2>().x;
-        vertical = context.ReadValue<Vector2>().y;
+        if (canMove)
+        {
+            horizontal = context.ReadValue<Vector2>().x;
+            vertical = context.ReadValue<Vector2>().y;
+        }
     }
 
     public void Jump(InputAction.CallbackContext context)
     {
 
-        if (context.performed)
-        {   
-            mirrorScript.Jump();
-            if (IsGrounded(boxCollider))
-            {
-                //hold to full jump height
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
-            }
-        }
-
-        if (context.performed && wallJumpCount > 0f)
+        if (canJump)
         {
-            isWallJump = true;
-            rb.linearVelocity = new Vector2(wallJumpDir * wallJumpingPower.x, wallJumpingPower.y); //jump away from wall
-            wallJumpCount = 0;
-
-            // Force Flip
-            if (transform.localScale.x != wallJumpDir)
+            if (context.performed)
             {
-                isFacingRight = !isFacingRight;
-                Vector2 localScale = transform.localScale;
-                localScale.x *= -1f;
-                transform.localScale = localScale;
+                mirrorScript.Jump();
+                if (IsGrounded(boxCollider))
+                {
+                    //hold to full jump height
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+                }
             }
 
-            Invoke(nameof(CancelWallJump), wallJumpDur); // Wall jump + 0.5f -- Jump again = 0.6f
+            if (context.performed && wallJumpCount > 0f)
+            {
+                isWallJump = true;
+                rb.linearVelocity = new Vector2(wallJumpDir * wallJumpingPower.x, wallJumpingPower.y); //jump away from wall
+                wallJumpCount = 0;
+
+                // Force Flip
+                if (transform.localScale.x != wallJumpDir)
+                {
+                    isFacingRight = !isFacingRight;
+                    Vector2 localScale = transform.localScale;
+                    localScale.x *= -1f;
+                    transform.localScale = localScale;
+                }
+
+                Invoke(nameof(CancelWallJump), wallJumpDur); // Wall jump + 0.5f -- Jump again = 0.6f
+            }
         }
     }
 
@@ -159,9 +168,27 @@ public class PlayerScript : MonoBehaviour
             
     }
 
-    public void Heal(float value)
+    public void DespawnPlayer()
     {
-        currentHealth = Mathf.Clamp(currentHealth + value, 0, startingHealth);
+        if (dead == true)
+        {
+            canMove = false;
+            canJump = false;
+            spriteRend.enabled = false;
+        }
+        dead = false;
+    }
+
+    public IEnumerator RespawnPlayer()
+    {
+        if (dead == false)
+        {
+            yield return new WaitForSeconds(1);
+            gameObject.transform.position = spawnPoint.position;
+            spriteRend.enabled = true;
+            canJump = true;
+            canMove = true;
+        }
     }
 
     public void Mirror(InputAction.CallbackContext context)
