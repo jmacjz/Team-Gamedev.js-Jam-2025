@@ -39,7 +39,6 @@ public class MirroredPlayer : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(IsWalled(boxCollider));
         WallSlide();
         ProcessWallJump();
 
