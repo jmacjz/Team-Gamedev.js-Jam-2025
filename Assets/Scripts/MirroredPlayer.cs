@@ -264,7 +264,7 @@ public class MirroredPlayer : MonoBehaviour
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, transform.localScale, 0.05f, wallLayer);
         if (hit.collider != null)
         {
-            print("Walled");
+            print("Mirror Walled");
             return true;
         }
         else
