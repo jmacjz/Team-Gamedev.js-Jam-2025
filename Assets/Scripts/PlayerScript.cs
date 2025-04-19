@@ -15,8 +15,8 @@ public class PlayerScript : MonoBehaviour
 
 
     [SerializeField] int startingHealth;
-    private float currentHealth;
-    private bool dead;
+    [SerializeField] private float currentHealth;
+    private bool dead = false;
     [SerializeField] float invulnDuration;
     [SerializeField] int flashNumber;
     private SpriteRenderer spriteRend;

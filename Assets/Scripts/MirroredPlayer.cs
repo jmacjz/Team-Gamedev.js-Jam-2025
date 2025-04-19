@@ -1,7 +1,9 @@
+using System.Collections;
 using UnityEngine;
 
 public class MirroredPlayer : MonoBehaviour
 {
+    PlayerScript playerScript;
     GameObject player;
     Rigidbody2D rb;
     Rigidbody2D playerRb;
@@ -10,7 +12,7 @@ public class MirroredPlayer : MonoBehaviour
     [SerializeField]
     private float jumpSpeed, wallSlidingSpeed;
     [SerializeField]
-    private LayerMask groundLayer, wallLayer;
+    private LayerMask groundLayer, wallLayer, trapLayer;
     [SerializeField]
     private bool isFacingRight, isWallSliding, isWallJump;
 
@@ -18,12 +20,19 @@ public class MirroredPlayer : MonoBehaviour
     
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    public bool canMove;
+    public bool canMove, canJump;
 
     public bool inDoor;
 
     private bool onMovingPlatform;
     private GameObject movingPlatform;
+
+    [SerializeField] int startingHealth;
+    [SerializeField] private float currentHealth;
+    private bool dead;
+    [SerializeField] float invulnDuration;
+    [SerializeField] int flashNumber;
+    private SpriteRenderer spriteRend;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -33,6 +42,11 @@ public class MirroredPlayer : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerRb = player.GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        canMove = true;
+        canJump = true;
+        playerScript = GetComponent<PlayerScript>();
+        currentHealth = startingHealth;
+        spriteRend = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -42,7 +56,12 @@ public class MirroredPlayer : MonoBehaviour
         WallSlide();
         ProcessWallJump();
 
-        if (!isWallJump && canMove)
+        if (dead == true)
+        {
+            DespawnPlayer();
+        }
+
+            if (!isWallJump && canMove)
         {
 
             if (!onMovingPlatform)
@@ -90,7 +109,46 @@ public class MirroredPlayer : MonoBehaviour
         }
     }
 
-    
+    public IEnumerator Invulnerability()
+    {
+        Physics2D.IgnoreLayerCollision(0, 9, true);
+        //So the player cannot be harmed by traps
+
+        for (int i = 0; i < flashNumber; i++)
+        {
+            spriteRend.color = new Color(1, 0, 0, 0.5f);
+            yield return new WaitForSeconds(invulnDuration / (flashNumber * 2));
+            spriteRend.color = Color.white;
+            yield return new WaitForSeconds(invulnDuration / (flashNumber * 2));
+        }
+        Physics2D.IgnoreLayerCollision(0, 9, false);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth = Mathf.Clamp(currentHealth - damage, 0, startingHealth);
+
+        if (currentHealth > 0)
+            StartCoroutine(Invulnerability());
+        else
+        {
+            if (!dead)
+                dead = true;
+        }
+
+    }
+
+    public void DespawnPlayer()
+    {
+        if (dead == true)
+        {
+            canMove = false;
+            canJump = false;
+            spriteRend.enabled = false;
+        }
+        dead = false;
+    }
+
 
     private void WallSlide()
     {
