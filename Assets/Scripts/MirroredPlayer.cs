@@ -33,6 +33,8 @@ public class MirroredPlayer : MonoBehaviour
     [SerializeField] float invulnDuration;
     [SerializeField] int flashNumber;
     private SpriteRenderer spriteRend;
+    [SerializeField]
+    private Transform spawnPoint;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,9 +61,10 @@ public class MirroredPlayer : MonoBehaviour
         if (dead == true)
         {
             DespawnPlayer();
+            StartCoroutine(RespawnPlayer());
         }
 
-            if (!isWallJump && canMove)
+        if (!isWallJump && canMove)
         {
 
             if (!onMovingPlatform)
@@ -147,6 +150,18 @@ public class MirroredPlayer : MonoBehaviour
             spriteRend.enabled = false;
         }
         dead = false;
+    }
+
+    public IEnumerator RespawnPlayer()
+    {
+        if (dead == false)
+        {
+            yield return new WaitForSeconds(1);
+            gameObject.transform.position = spawnPoint.position;
+            spriteRend.enabled = true;
+            canJump = true;
+            canMove = true;
+        }
     }
 
 
