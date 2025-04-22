@@ -46,6 +46,12 @@ public class PlayerScript : MonoBehaviour
     public bool onMovingPlatform;
     private GameObject movingPlatform;
 
+    [SerializeField]
+    private float coyoteTime = 0.2f, coyoteTimeCount;
+
+    [SerializeField]
+    private float jumpBufferTime = 0.2f, jumpBufferCount;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -76,6 +82,16 @@ public class PlayerScript : MonoBehaviour
 
         if (!isWallJump && canMove)
         {
+            if (IsGrounded(boxCollider))
+            {
+                coyoteTimeCount = coyoteTime;
+            }
+            else
+            {
+                coyoteTimeCount -= Time.deltaTime;
+            }
+
+
             if (!onMovingPlatform)
                 rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
             else
@@ -109,16 +125,35 @@ public class PlayerScript : MonoBehaviour
 
         if (canJump)
         {
+            // jump
             if (context.performed)
             {
-                mirrorScript.Jump();
-                if (IsGrounded(boxCollider))
-                {
-                    //hold to full jump height
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
-                }
+                jumpBufferCount = jumpBufferTime;
+            }
+            else
+            {
+                print("Jump Buffer Else");
+                jumpBufferCount -= Time.deltaTime;
             }
 
+            if (jumpBufferCount > 0f && coyoteTimeCount > 0f)
+            {
+                mirrorScript.Jump();
+
+                //hold to full jump height
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+                jumpBufferCount = 0f;
+
+            }
+
+            if (context.canceled)
+            {
+                // short hop mechanic
+                //rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+                coyoteTimeCount = 0f;
+            }
+
+            // wall jump
             if (context.performed && wallJumpCount > 0f)
             {
                 isWallJump = true;
