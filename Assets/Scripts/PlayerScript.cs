@@ -113,11 +113,9 @@ public class PlayerScript : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (canMove)
-        {
-            horizontal = context.ReadValue<Vector2>().x;
-            vertical = context.ReadValue<Vector2>().y;
-        }
+        horizontal = context.ReadValue<Vector2>().x;
+        vertical = context.ReadValue<Vector2>().y;
+        
     }
 
     public void Jump(InputAction.CallbackContext context)

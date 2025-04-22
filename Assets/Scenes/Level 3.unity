@@ -1447,6 +1447,9 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
+  trapLayer:
+    serializedVersion: 2
+    m_Bits: 0
   isFacingRight: 1
   isWallSliding: 0
   isWallJump: 0
@@ -1456,7 +1459,13 @@ MonoBehaviour:
   wallJumpDur: 0.4
   jumpingPower: 15
   canMove: 0
+  canJump: 0
   inDoor: 0
+  startingHealth: 0
+  currentHealth: 0
+  invulnDuration: 0
+  flashNumber: 0
+  spawnPoint: {fileID: 0}
 --- !u!1 &2128250783
 GameObject:
   m_ObjectHideFlags: 0
@@ -1704,7 +1713,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFacingRight: 1
+  spawnPoint: {fileID: 0}
   startingHealth: 0
+  currentHealth: 0
   invulnDuration: 0
   flashNumber: 0
   speed: 10
@@ -1713,7 +1724,7 @@ MonoBehaviour:
   wallJumpDir: 0
   wallJumpTime: 0.2
   wallJumpCount: 0
-  wallJumpDur: 0.4
+  wallJumpDur: 0.7
   jumpingPower: 15
   isWallSliding: 0
   isWallJump: 0
@@ -1729,6 +1740,7 @@ MonoBehaviour:
   mirroredPlayer: {fileID: 1826471771}
   mirrored: 0
   canMove: 0
+  canJump: 0
   onMovingPlatform: 0
 --- !u!61 &2128250788
 BoxCollider2D:
