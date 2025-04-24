@@ -63,7 +63,6 @@ public class PlayerScript : MonoBehaviour
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
         mirrorCollider = mirroredPlayer.GetComponent<BoxCollider2D>();
         mirrorScript = mirroredPlayer.GetComponent<MirroredPlayer>();
-        mirroredPlayer.SetActive(false);
         spriteRend = GetComponent<SpriteRenderer>();
         currentHealth = startingHealth;
     }
@@ -127,6 +126,7 @@ public class PlayerScript : MonoBehaviour
             if (context.performed)
             {
                 jumpBufferCount = jumpBufferTime;
+                mirrorScript.Jump();
             }
             else
             {
@@ -136,7 +136,7 @@ public class PlayerScript : MonoBehaviour
 
             if (jumpBufferCount > 0f && coyoteTimeCount > 0f)
             {
-                mirrorScript.Jump();
+                
 
                 //hold to full jump height
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
@@ -208,6 +208,8 @@ public class PlayerScript : MonoBehaviour
             canMove = false;
             canJump = false;
             spriteRend.enabled = false;
+
+            DeleteProjectiles();
         }
         dead = false;
     }
@@ -299,6 +301,19 @@ public class PlayerScript : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+        }
+    }
+
+    private void DeleteProjectiles()
+    {
+        GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Traps");
+
+        foreach (GameObject trap in gameObjects)
+        {
+            if (trap.name.Contains("Arrow"))
+            {
+                Destroy(trap);
+            }
         }
     }
 
