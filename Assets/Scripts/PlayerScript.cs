@@ -21,7 +21,10 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] int flashNumber;
     private SpriteRenderer spriteRend;
 
-    private bool inDoor; // boolean for when the player is touching the door/button that completes the level (just calling it door for now)
+    private bool inDoor; // boolean for when the player is touching the door that completes the level 
+    private bool beatLevel = false;
+
+
 
 
     [SerializeField]
@@ -104,9 +107,11 @@ public class PlayerScript : MonoBehaviour
 
 
 
-        if (inDoor && mirrorScript.inDoor == true)
+        if (inDoor && mirrorScript.inDoor == true && !beatLevel)
         {
-            Debug.Log("You Beat The Level");
+            GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
+            gameScript.beatLevel = true;
+            beatLevel = true;
         }
     }
 
