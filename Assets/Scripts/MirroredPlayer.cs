@@ -33,8 +33,8 @@ public class MirroredPlayer : MonoBehaviour
     [SerializeField] float invulnDuration;
     [SerializeField] int flashNumber;
     private SpriteRenderer spriteRend;
-    [SerializeField]
-    private Transform spawnPoint;
+    
+    public Transform spawnPoint;
 
     [SerializeField]
     private AudioClip jumpSound, deathSound;

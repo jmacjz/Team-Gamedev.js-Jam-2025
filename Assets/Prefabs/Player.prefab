@@ -285,6 +285,12 @@ MonoBehaviour:
   canMove: 0
   canJump: 0
   onMovingPlatform: 0
+  coyoteTime: 0.2
+  coyoteTimeCount: 0
+  jumpBufferTime: 0.2
+  jumpBufferCount: 0
+  jumpSound: {fileID: 8300000, guid: 64e0cad0fbfedf34f8f1cf3c4490740a, type: 3}
+  deathSound: {fileID: 0}
 --- !u!114 &7069422314719296113
 MonoBehaviour:
   m_ObjectHideFlags: 0

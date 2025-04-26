@@ -42,18 +42,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Mirror",
+                    "name": "Reset",
                     "type": "Button",
                     "id": "67f4f576-5c29-49e3-855a-1925f1b98f64",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "FreezeMirror",
-                    "type": "Button",
-                    "id": "9301b5dc-5b6c-47a8-842f-491b4af6ab4c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -295,22 +286,11 @@
                 {
                     "name": "",
                     "id": "7a6612b3-242e-4d37-9047-d3c166d4e27b",
-                    "path": "<Keyboard>/z",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Mirror",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "122d50c9-b1bd-4973-8ca5-8e50e004b326",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "FreezeMirror",
+                    "action": "Reset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

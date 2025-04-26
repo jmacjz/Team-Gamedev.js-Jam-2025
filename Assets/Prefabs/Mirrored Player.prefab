@@ -281,3 +281,5 @@ MonoBehaviour:
   invulnDuration: 2
   flashNumber: 3
   spawnPoint: {fileID: 0}
+  jumpSound: {fileID: 8300000, guid: 64e0cad0fbfedf34f8f1cf3c4490740a, type: 3}
+  deathSound: {fileID: 0}

@@ -64,7 +64,7 @@ public class PlayerScript : MonoBehaviour
     {
         canMove = true;
         canJump = true;
-        
+
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
@@ -107,7 +107,7 @@ public class PlayerScript : MonoBehaviour
 
             Flip();
         }
-        
+
 
 
 
@@ -123,7 +123,7 @@ public class PlayerScript : MonoBehaviour
     {
         horizontal = context.ReadValue<Vector2>().x;
         vertical = context.ReadValue<Vector2>().y;
-        
+
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -147,7 +147,7 @@ public class PlayerScript : MonoBehaviour
             {
 
 
-                //SoundManager.instance.PlaySound(jumpSound);
+                SoundManager.instance.PlaySound(jumpSound);
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
                 jumpBufferCount = 0f;
 
@@ -207,7 +207,7 @@ public class PlayerScript : MonoBehaviour
             if (!dead)
                 dead = true;
         }
-            
+
     }
 
     public void DespawnPlayer()
@@ -217,7 +217,6 @@ public class PlayerScript : MonoBehaviour
             canMove = false;
             canJump = false;
             spriteRend.enabled = false;
-            boxCollider.enabled = false;
 
             DeleteProjectiles();
         }
@@ -230,44 +229,23 @@ public class PlayerScript : MonoBehaviour
         {
             yield return new WaitForSeconds(1);
             gameObject.transform.position = spawnPoint.position;
-            boxCollider.enabled = true;
             spriteRend.enabled = true;
             canJump = true;
             canMove = true;
         }
     }
 
-    public void Mirror(InputAction.CallbackContext context)
+    public void Reset(InputAction.CallbackContext context)
     {
-        if (context.performed && !mirrored)
+        if (context.performed)
         {
-            mirrored = true;
-            mirroredPlayer.SetActive(true);
-            mirroredPlayer.transform.position = transform.position + new Vector3(5, 0, 0);
-            
+            transform.position = spawnPoint.position;
+            mirroredPlayer.transform.position = mirroredPlayer.GetComponent<MirroredPlayer>().spawnPoint.position;
         }
 
-        else if (context.performed && mirrored)
-        {
-            mirrored = false;
-            mirroredPlayer.SetActive(false);
-        }
+
     }
 
-    public void FreezeMirror(InputAction.CallbackContext context)
-    {
-        if (context.performed && mirrorScript.canMove)
-        {
-            mirrorScript.canMove = false;
-        }
-
-        else if (context.performed && !mirrorScript.canMove)
-        {
-            mirrorScript.canMove = true;
-        }
-
-        
-    }
 
     private void WallSlide()
     {

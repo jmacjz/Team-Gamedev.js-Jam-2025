@@ -151,9 +151,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1863169554}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -11.591, y: 172}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 388.409, y: -53}
   m_SizeDelta: {x: 731.996, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &66309807
@@ -583,7 +583,7 @@ Transform:
   m_GameObject: {fileID: 701091278}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.27, y: -1.17, z: 3512.8867}
+  m_LocalPosition: {x: 3.27, y: -1.17, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -614,7 +614,7 @@ Transform:
   m_GameObject: {fileID: 795163702}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.1, y: -1.51, z: 3512.8867}
+  m_LocalPosition: {x: 15.1, y: -1.51, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1148,7 +1148,7 @@ MonoBehaviour:
     m_Bits: 128
   trapLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   isFacingRight: 0
   isWallSliding: 0
   isWallJump: 0
@@ -1164,7 +1164,9 @@ MonoBehaviour:
   currentHealth: 0
   invulnDuration: 0
   flashNumber: 0
-  spawnPoint: {fileID: 0}
+  spawnPoint: {fileID: 795163703}
+  jumpSound: {fileID: 8300000, guid: 64e0cad0fbfedf34f8f1cf3c4490740a, type: 3}
+  deathSound: {fileID: 8300000, guid: 72a5e48108fd4e341b70bc7b4a4c8dad, type: 3}
 --- !u!1 &1863169550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,7 +1469,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2128250787}
         m_TargetAssemblyTypeName: PlayerScript, Assembly-CSharp
-        m_MethodName: Mirror
+        m_MethodName: Reset
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1479,22 +1481,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 67f4f576-5c29-49e3-855a-1925f1b98f64
     m_ActionName: 'Player/Mirror[/Keyboard/z]'
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2128250787}
-        m_TargetAssemblyTypeName: PlayerScript, Assembly-CSharp
-        m_MethodName: FreezeMirror
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 9301b5dc-5b6c-47a8-842f-491b4af6ab4c
-    m_ActionName: 'Player/FreezeMirror[/Keyboard/f]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1513,7 +1499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFacingRight: 1
-  spawnPoint: {fileID: 0}
+  spawnPoint: {fileID: 701091279}
   startingHealth: 0
   currentHealth: 0
   invulnDuration: 0
@@ -1536,7 +1522,7 @@ MonoBehaviour:
     m_Bits: 0
   trapLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   mirroredPlayer: {fileID: 1826471771}
   mirrored: 0
   canMove: 0
@@ -1546,6 +1532,8 @@ MonoBehaviour:
   coyoteTimeCount: 0
   jumpBufferTime: 0.2
   jumpBufferCount: 0
+  jumpSound: {fileID: 8300000, guid: 64e0cad0fbfedf34f8f1cf3c4490740a, type: 3}
+  deathSound: {fileID: 8300000, guid: 72a5e48108fd4e341b70bc7b4a4c8dad, type: 3}
 --- !u!61 &2128250788
 BoxCollider2D:
   m_ObjectHideFlags: 0
