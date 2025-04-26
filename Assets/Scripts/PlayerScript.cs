@@ -147,7 +147,7 @@ public class PlayerScript : MonoBehaviour
             {
 
 
-                SoundManager.instance.PlaySound(jumpSound);
+                //SoundManager.instance.PlaySound(jumpSound);
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
                 jumpBufferCount = 0f;
 
@@ -217,6 +217,7 @@ public class PlayerScript : MonoBehaviour
             canMove = false;
             canJump = false;
             spriteRend.enabled = false;
+            boxCollider.enabled = false;
 
             DeleteProjectiles();
         }
@@ -229,6 +230,7 @@ public class PlayerScript : MonoBehaviour
         {
             yield return new WaitForSeconds(1);
             gameObject.transform.position = spawnPoint.position;
+            boxCollider.enabled = true;
             spriteRend.enabled = true;
             canJump = true;
             canMove = true;

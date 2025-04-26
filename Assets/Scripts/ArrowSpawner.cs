@@ -6,7 +6,7 @@ public class ArrowSpawner : MonoBehaviour
     private GameObject arrow;
 
     [SerializeField]
-    private float arrowInterval, projectileSpeed;
+    private float arrowInterval, projectileSpeed, lifetime;
 
     private int offset;
 
@@ -20,16 +20,10 @@ public class ArrowSpawner : MonoBehaviour
             offset = 1;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ShootArrow()
     {
-        GameObject projectile = Instantiate(arrow, transform.position + new Vector3(offset, 0, 0), transform.rotation);
+        GameObject projectile = Instantiate(arrow, transform.position + new Vector3(offset, 0, 0), Quaternion.identity);
         projectile.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(projectileSpeed, 0);
-        Destroy(projectile, 3);
+        Destroy(projectile, lifetime);
     }
 }

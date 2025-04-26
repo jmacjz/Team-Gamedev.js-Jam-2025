@@ -93,7 +93,7 @@ public class MirroredPlayer : MonoBehaviour
     {
         if (IsGrounded(boxCollider) && canMove)
         {
-            SoundManager.instance.PlaySound(jumpSound);
+            //SoundManager.instance.PlaySound(jumpSound);
             rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, jumpSpeed);
         }
 
@@ -149,6 +149,7 @@ public class MirroredPlayer : MonoBehaviour
     {
         if (dead == true)
         {
+            boxCollider.enabled = false;
             canMove = false;
             canJump = false;
             spriteRend.enabled = false;
@@ -162,6 +163,7 @@ public class MirroredPlayer : MonoBehaviour
         {
             yield return new WaitForSeconds(1);
             gameObject.transform.position = spawnPoint.position;
+            boxCollider.enabled = true;
             spriteRend.enabled = true;
             canJump = true;
             canMove = true;
