@@ -33,6 +33,11 @@ public class MirroredPlayer : MonoBehaviour
     [SerializeField] float invulnDuration;
     [SerializeField] int flashNumber;
     private SpriteRenderer spriteRend;
+    [SerializeField]
+    private Transform spawnPoint;
+
+    [SerializeField]
+    private AudioClip jumpSound, deathSound;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,9 +64,10 @@ public class MirroredPlayer : MonoBehaviour
         if (dead == true)
         {
             DespawnPlayer();
+            StartCoroutine(RespawnPlayer());
         }
 
-            if (!isWallJump && canMove)
+        if (!isWallJump && canMove)
         {
 
             if (!onMovingPlatform)
@@ -87,6 +93,7 @@ public class MirroredPlayer : MonoBehaviour
     {
         if (IsGrounded(boxCollider) && canMove)
         {
+            SoundManager.instance.PlaySound(jumpSound);
             rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, jumpSpeed);
         }
 
@@ -147,6 +154,18 @@ public class MirroredPlayer : MonoBehaviour
             spriteRend.enabled = false;
         }
         dead = false;
+    }
+
+    public IEnumerator RespawnPlayer()
+    {
+        if (dead == false)
+        {
+            yield return new WaitForSeconds(1);
+            gameObject.transform.position = spawnPoint.position;
+            spriteRend.enabled = true;
+            canJump = true;
+            canMove = true;
+        }
     }
 
 
@@ -249,7 +268,7 @@ public class MirroredPlayer : MonoBehaviour
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, transform.localScale, 0.05f, wallLayer);
         if (hit.collider != null)
         {
-            print("Walled");
+            print("Mirror Walled");
             return true;
         }
         else

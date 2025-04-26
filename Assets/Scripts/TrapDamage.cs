@@ -10,7 +10,14 @@ public class TrapDamage : MonoBehaviour
         if (collision.tag == "Player")
         {
             collision.GetComponent<PlayerScript>().TakeDamage(damage);
+            GameObject.Find("Mirrored Player").GetComponent<MirroredPlayer>().TakeDamage(damage);
+            
+        }
+
+        else if (collision.tag == "Mirrored Player")
+        {
             collision.GetComponent<MirroredPlayer>().TakeDamage(damage);
+            GameObject.Find("Player").GetComponent<PlayerScript>().TakeDamage(damage);
         }
         
     }

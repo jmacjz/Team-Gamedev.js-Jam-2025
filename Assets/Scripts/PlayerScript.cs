@@ -21,7 +21,10 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] int flashNumber;
     private SpriteRenderer spriteRend;
 
-    private bool inDoor; // boolean for when the player is touching the door/button that completes the level (just calling it door for now)
+    private bool inDoor; // boolean for when the player is touching the door that completes the level 
+    private bool beatLevel = false;
+
+
 
 
     [SerializeField]
@@ -46,6 +49,16 @@ public class PlayerScript : MonoBehaviour
     public bool onMovingPlatform;
     private GameObject movingPlatform;
 
+    [SerializeField]
+    private float coyoteTime = 0.2f, coyoteTimeCount;
+
+    [SerializeField]
+    private float jumpBufferTime = 0.2f, jumpBufferCount;
+
+    [SerializeField]
+    private AudioClip jumpSound, deathSound;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -57,7 +70,6 @@ public class PlayerScript : MonoBehaviour
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
         mirrorCollider = mirroredPlayer.GetComponent<BoxCollider2D>();
         mirrorScript = mirroredPlayer.GetComponent<MirroredPlayer>();
-        mirroredPlayer.SetActive(false);
         spriteRend = GetComponent<SpriteRenderer>();
         currentHealth = startingHealth;
     }
@@ -76,6 +88,16 @@ public class PlayerScript : MonoBehaviour
 
         if (!isWallJump && canMove)
         {
+            if (IsGrounded(boxCollider))
+            {
+                coyoteTimeCount = coyoteTime;
+            }
+            else
+            {
+                coyoteTimeCount -= Time.deltaTime;
+            }
+
+
             if (!onMovingPlatform)
                 rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
             else
@@ -89,19 +111,19 @@ public class PlayerScript : MonoBehaviour
 
 
 
-        if (inDoor && mirrorScript.inDoor == true)
+        if (inDoor && mirrorScript.inDoor == true && !beatLevel)
         {
-            Debug.Log("You Beat The Level");
+            GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
+            gameScript.beatLevel = true;
+            beatLevel = true;
         }
     }
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (canMove)
-        {
-            horizontal = context.ReadValue<Vector2>().x;
-            vertical = context.ReadValue<Vector2>().y;
-        }
+        horizontal = context.ReadValue<Vector2>().x;
+        vertical = context.ReadValue<Vector2>().y;
+        
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -109,16 +131,36 @@ public class PlayerScript : MonoBehaviour
 
         if (canJump)
         {
+            // jump
             if (context.performed)
             {
+                jumpBufferCount = jumpBufferTime;
                 mirrorScript.Jump();
-                if (IsGrounded(boxCollider))
-                {
-                    //hold to full jump height
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
-                }
+            }
+            else
+            {
+                print("Jump Buffer Else");
+                jumpBufferCount -= Time.deltaTime;
             }
 
+            if (jumpBufferCount > 0f && coyoteTimeCount > 0f)
+            {
+
+
+                SoundManager.instance.PlaySound(jumpSound);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+                jumpBufferCount = 0f;
+
+            }
+
+            if (context.canceled)
+            {
+                // short hop mechanic
+                //rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+                coyoteTimeCount = 0f;
+            }
+
+            // wall jump
             if (context.performed && wallJumpCount > 0f)
             {
                 isWallJump = true;
@@ -175,6 +217,8 @@ public class PlayerScript : MonoBehaviour
             canMove = false;
             canJump = false;
             spriteRend.enabled = false;
+
+            DeleteProjectiles();
         }
         dead = false;
     }
@@ -266,6 +310,19 @@ public class PlayerScript : MonoBehaviour
             Vector2 localScale = transform.localScale;
             localScale.x *= -1f;
             transform.localScale = localScale;
+        }
+    }
+
+    private void DeleteProjectiles()
+    {
+        GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Traps");
+
+        foreach (GameObject trap in gameObjects)
+        {
+            if (trap.name.Contains("Arrow"))
+            {
+                Destroy(trap);
+            }
         }
     }
 
