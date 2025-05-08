@@ -11,11 +11,10 @@ GameObject:
   - component: {fileID: 2865687633466057061}
   - component: {fileID: 5814194088417162889}
   - component: {fileID: 8052055627850191669}
-  - component: {fileID: 4165050621372259017}
   - component: {fileID: 6958704577154490688}
   - component: {fileID: 5896136732865133277}
   m_Layer: 6
-  m_Name: Moving Platform
+  m_Name: Platform
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 4982108240276696758}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.3, y: 1.95, z: 0}
-  m_LocalScale: {x: 5, y: 0.9680086, z: 1}
+  m_LocalPosition: {x: -1.8, y: 0.4, z: 0}
+  m_LocalScale: {x: 4.4959874, y: 0.45410368, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -81,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0.7132796, b: 0.93962264, a: 1}
+  m_Color: {r: 0.7509433, g: 0.7509433, b: 0.7509433, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -137,20 +136,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.0107911, y: 0.12205982}
   m_EdgeRadius: 0
---- !u!114 &4165050621372259017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4982108240276696758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 047c7facfe596fc4ca170caa9a6e1a43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveTime: 3
-  moveSpeed: 5
 --- !u!50 &6958704577154490688
 Rigidbody2D:
   serializedVersion: 5

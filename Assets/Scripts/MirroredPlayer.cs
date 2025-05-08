@@ -70,18 +70,9 @@ public class MirroredPlayer : MonoBehaviour
         if (!isWallJump && canMove)
         {
 
-            if (!onMovingPlatform)
-            {
-                if(player.GetComponent<PlayerScript>().onMovingPlatform == true)
-                    rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x + movingPlatform.GetComponent<MovingPlatform>().moveSpeed, rb.linearVelocity.y);               
-                else
-                    rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
-            }
-                    
-            else
-            {
-                rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x + movingPlatform.GetComponent<MovingPlatform>().moveSpeed, rb.linearVelocity.y);
-            }
+            
+            rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
+           
             
                 
             Flip();

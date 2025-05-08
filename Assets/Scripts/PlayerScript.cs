@@ -98,12 +98,9 @@ public class PlayerScript : MonoBehaviour
             }
 
 
-            if (!onMovingPlatform)
-                rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
-            else
-            {
-                rb.linearVelocity = new Vector2(horizontal * speed + movingPlatform.GetComponent<MovingPlatform>().moveSpeed, rb.linearVelocity.y);
-            }
+            
+           rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+            
 
             Flip();
         }
