@@ -23,8 +23,7 @@ public class PlayerScript : MonoBehaviour
 
     private bool inDoor; // boolean for when the player is touching the door that completes the level 
     private bool beatLevel = false;
-
-
+    [SerializeField] private bool paused;
 
 
     [SerializeField]
@@ -62,6 +61,7 @@ public class PlayerScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        paused = false;
         canMove = true;
         canJump = true;
 
@@ -119,6 +119,25 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public void Pause(InputAction.CallbackContext context)
+    {
+        if (paused == false && context.performed)
+        {
+            Time.timeScale = 0;
+            paused = true;
+            
+        }
+    }
+    
+    public void Unpause(InputAction.CallbackContext context)
+    {
+        if (paused == true && context.performed)
+        {
+            Time.timeScale = 1;
+            paused = false;
+        }
+    }
+    
     public void Move(InputAction.CallbackContext context)
     {
         horizontal = context.ReadValue<Vector2>().x;
