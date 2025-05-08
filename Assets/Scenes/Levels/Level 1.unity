@@ -1481,6 +1481,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 67f4f576-5c29-49e3-855a-1925f1b98f64
     m_ActionName: 'Player/Mirror[/Keyboard/z]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2128250787}
+        m_TargetAssemblyTypeName: PlayerScript, Assembly-CSharp
+        m_MethodName: Pause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1d66f19e-48b7-442c-bc6a-3b272f939bc4
+    m_ActionName: 'Player/Pause[/Keyboard/p]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -1504,6 +1520,7 @@ MonoBehaviour:
   currentHealth: 0
   invulnDuration: 0
   flashNumber: 0
+  paused: 0
   speed: 10
   jumpSpeed: 15
   wallSlidingSpeed: 2

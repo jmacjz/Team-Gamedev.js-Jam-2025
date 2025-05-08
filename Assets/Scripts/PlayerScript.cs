@@ -124,11 +124,8 @@ public class PlayerScript : MonoBehaviour
             paused = true;
             
         }
-    }
-    
-    public void Unpause(InputAction.CallbackContext context)
-    {
-        if (paused == true && context.performed)
+
+        else if (paused == true && context.performed)
         {
             Time.timeScale = 1;
             paused = false;
