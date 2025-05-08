@@ -110,9 +110,13 @@ public class PlayerScript : MonoBehaviour
 
         if (inDoor && mirrorScript.inDoor == true && !beatLevel)
         {
-            GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
-            gameScript.beatLevel = true;
-            beatLevel = true;
+            if (GameObject.Find("GameManager") != null)
+            {
+                GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
+                gameScript.beatLevel = true;
+                beatLevel = true;
+            }
+            
         }
     }
 
@@ -159,8 +163,8 @@ public class PlayerScript : MonoBehaviour
             if (jumpBufferCount > 0f && coyoteTimeCount > 0f)
             {
 
-
-                SoundManager.instance.PlaySound(jumpSound);
+                if(SoundManager.instance != null)
+                    SoundManager.instance.PlaySound(jumpSound);
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
                 jumpBufferCount = 0f;
 
@@ -357,12 +361,10 @@ public class PlayerScript : MonoBehaviour
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.05f, groundLayer);
         if (hit.collider != null)
         {
-            print("Grounded");
             return true;
         }
         else
         {
-            print("Not Grounded");
             return false;
         }
     }
