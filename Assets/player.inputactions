@@ -353,7 +353,7 @@
                     "name": "Submit",
                     "type": "Button",
                     "id": "b38becc1-0a2c-4f39-8a67-2037f33eada6",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
