@@ -355,7 +355,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4594481021363707536}
         m_TargetAssemblyTypeName: PlayerScript, Assembly-CSharp
-        m_MethodName: Unpause
+        m_MethodName: Interact
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -365,8 +365,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: 00dc697f-05f4-47be-a447-a4259a2191c2
-    m_ActionName: 'Player/Unpause[/Keyboard/p]'
+    m_ActionId: 458b2b11-85bb-4831-ab06-2e02e1c1300b
+    m_ActionName: 'Player/Interact[/Keyboard/g]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

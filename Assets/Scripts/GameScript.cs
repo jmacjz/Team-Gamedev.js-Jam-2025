@@ -7,16 +7,13 @@ using UnityEngine.UI;
 public class GameScript : MonoBehaviour
 {
     public bool beatLevel;
-    [SerializeField]
-    private int levelsBeaten = 1;
 
-    public Button[] buttons;
+    public int levelsBeaten = 1;
 
     private GameObject player;
 
     public static GameScript Instance;
 
-    bool unlockedButtons = false;
 
     void Awake()
     {
@@ -46,20 +43,9 @@ public class GameScript : MonoBehaviour
             
             beatLevel = false;
             StartCoroutine(SceneTransition());
-            unlockedButtons = false;
             
         }
 
-        if (scene.name == "Levels")
-        {
-            buttons = GameObject.Find("ButtonsList").GetComponent<ButtonsList>().buttons;
-            
-            if (!unlockedButtons)
-            {
-                UnlockButtons();
-                unlockedButtons = true;
-            }
-        }
 
     }
 
@@ -74,19 +60,11 @@ public class GameScript : MonoBehaviour
         return PlayerPrefs.GetInt("LevelsBeaten", 0);
     }
 
-    private void UnlockButtons()
-    {
-        
-        for (int i = 0; i < levelsBeaten + 1; i++)
-        {
-            buttons[i].interactable = true;   
-        }
-
-    }
 
     private IEnumerator SceneTransition()
     {
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene("Levels");
     }
+
 }

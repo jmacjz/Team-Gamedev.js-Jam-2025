@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -56,6 +57,11 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     private AudioClip jumpSound, deathSound;
+    [SerializeField]
+    private bool interacting, canRestart, canChangeLevel, onHubDoor;
+    private GameObject hubDoor = null;
+
+    
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -77,6 +83,21 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Scene scene = SceneManager.GetActiveScene();
+        if (scene.name == "Levels")
+        {
+            canRestart = false;
+        }
+        else
+        {
+            canRestart = true;
+        }
+
+        if (onHubDoor && hubDoor != null && hubDoor.GetComponent<HubDoor>().locked == false && interacting)
+        {
+            StartCoroutine(ChangeScene(hubDoor.GetComponent<HubDoor>().level));
+        }
+
         WallSlide();
         ProcessWallJump();
 
@@ -254,10 +275,26 @@ public class PlayerScript : MonoBehaviour
 
     public void Reset(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && canRestart)
         {
             transform.position = spawnPoint.position;
             mirroredPlayer.transform.position = mirroredPlayer.GetComponent<MirroredPlayer>().spawnPoint.position;
+        }
+
+
+
+    }
+
+    public void Interact(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            interacting = true;
+        }
+
+        else
+        {
+            interacting = false;
         }
 
 
@@ -346,6 +383,11 @@ public class PlayerScript : MonoBehaviour
         {
             inDoor = true;
         }
+        if (col.gameObject.layer == 13)
+        {
+            onHubDoor = true;
+            hubDoor = col.gameObject;
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -354,6 +396,13 @@ public class PlayerScript : MonoBehaviour
         {
             inDoor = false;
         }
+
+        if (col.gameObject.layer == 13)
+        {
+            onHubDoor = false;
+            hubDoor = null;
+        }
+        
     }
 
     public bool IsGrounded(BoxCollider2D boxCollider)
@@ -381,5 +430,11 @@ public class PlayerScript : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public IEnumerator ChangeScene(int level)
+    {
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene("Level " + level);
     }
 }
