@@ -24,7 +24,8 @@ public class PlayerScript : MonoBehaviour
 
     private bool inDoor; // boolean for when the player is touching the door that completes the level 
     private bool beatLevel = false;
-    [SerializeField] private bool paused;
+    public static bool paused;
+    [SerializeField] private GameObject pauseMenuUI;
 
 
     [SerializeField]
@@ -68,6 +69,7 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         paused = false;
+        pauseMenuUI.SetActive(false);
         canMove = true;
         canJump = true;
 
@@ -147,13 +149,14 @@ public class PlayerScript : MonoBehaviour
         {
             Time.timeScale = 0;
             paused = true;
-            
+            pauseMenuUI.SetActive(true);
         }
 
         else if (paused == true && context.performed)
         {
             Time.timeScale = 1;
             paused = false;
+            pauseMenuUI.SetActive(false);
         }
     }
     
