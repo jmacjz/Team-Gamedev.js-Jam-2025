@@ -84,7 +84,7 @@ public class MirroredPlayer : MonoBehaviour
     {
         if (IsGrounded(boxCollider) && canMove)
         {
-            //SoundManager.instance.PlaySound(jumpSound);
+            SoundManager.instance.PlaySound(jumpSound);
             rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, jumpSpeed);
         }
 

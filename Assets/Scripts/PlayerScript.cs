@@ -159,6 +159,11 @@ public class PlayerScript : MonoBehaviour
             pauseMenuUI.SetActive(false);
         }
     }
+
+    public void Unpause()
+    {
+        Time.timeScale = 1;
+    }
     
     public void Move(InputAction.CallbackContext context)
     {
