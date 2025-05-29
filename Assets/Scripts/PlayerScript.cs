@@ -62,9 +62,6 @@ public class PlayerScript : MonoBehaviour
     private bool interacting, canRestart, canChangeLevel, onHubDoor;
     private GameObject hubDoor = null;
 
-
-    [SerializeField]
-    bool hitBoss = false;
     
 
 
@@ -423,10 +420,7 @@ public class PlayerScript : MonoBehaviour
             onHubDoor = false;
             hubDoor = null;
         }
-        if (col.gameObject.layer == 14)
-        {
-            hitBoss = false;
-        }
+        
 
     }
 
