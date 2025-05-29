@@ -113,7 +113,7 @@ public class PlayerScript : MonoBehaviour
 
         if (!isWallJump && canMove)
         {
-            if (IsGrounded(boxCollider))
+            if (IsGrounded())
             {
                 coyoteTimeCount = coyoteTime;
             }
@@ -313,7 +313,7 @@ public class PlayerScript : MonoBehaviour
 
     private void WallSlide()
     {
-        if (IsWalled(boxCollider) && !IsGrounded(boxCollider) && horizontal != 0f)
+        if (IsWalled() && !IsGrounded() && horizontal != 0f)
         {
             print("Sliding");
             isWallSliding = true;
@@ -424,7 +424,7 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    public bool IsGrounded(BoxCollider2D boxCollider)
+    public bool IsGrounded()
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.05f, groundLayer);
         if (hit.collider != null)
@@ -437,7 +437,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public bool IsWalled(BoxCollider2D boxCollider)
+    public bool IsWalled()
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, transform.localScale, 0.05f, wallLayer);
         if (hit.collider != null)
