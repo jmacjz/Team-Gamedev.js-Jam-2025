@@ -20,7 +20,7 @@ public class MirroredPlayer : MonoBehaviour
     
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    public bool canMove, canJump;
+    public bool canMove, canJump, hitBoss;
 
     public bool inDoor;
 
@@ -38,6 +38,8 @@ public class MirroredPlayer : MonoBehaviour
 
     [SerializeField]
     private AudioClip jumpSound, deathSound;
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -218,6 +220,10 @@ public class MirroredPlayer : MonoBehaviour
         {
             inDoor = true;
         }
+        if (col.gameObject.layer == 14)
+        {
+            hitBoss = true;
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -225,6 +231,10 @@ public class MirroredPlayer : MonoBehaviour
         if (col.gameObject.layer == 11)
         {
             inDoor = false;
+        }
+        if (col.gameObject.layer == 14)
+        {
+            hitBoss = false;
         }
     }
 

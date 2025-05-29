@@ -62,6 +62,9 @@ public class PlayerScript : MonoBehaviour
     private bool interacting, canRestart, canChangeLevel, onHubDoor;
     private GameObject hubDoor = null;
 
+
+    [SerializeField]
+    bool hitBoss = false;
     
 
 
@@ -80,6 +83,8 @@ public class PlayerScript : MonoBehaviour
         mirrorScript = mirroredPlayer.GetComponent<MirroredPlayer>();
         spriteRend = GetComponent<SpriteRenderer>();
         currentHealth = startingHealth;
+
+        
     }
 
     // Update is called once per frame
@@ -396,6 +401,14 @@ public class PlayerScript : MonoBehaviour
             onHubDoor = true;
             hubDoor = col.gameObject;
         }
+        if (col.gameObject.layer == 14)
+        {
+            if (mirrorScript.hitBoss == true)
+            {
+                Debug.Log("Hit boss");
+            }
+
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -410,7 +423,11 @@ public class PlayerScript : MonoBehaviour
             onHubDoor = false;
             hubDoor = null;
         }
-        
+        if (col.gameObject.layer == 14)
+        {
+            hitBoss = false;
+        }
+
     }
 
     public bool IsGrounded(BoxCollider2D boxCollider)
