@@ -10,7 +10,7 @@ public class PlayerScript : MonoBehaviour
     float horizontal;
     float vertical;
     public bool isFacingRight = true;
-    Rigidbody2D rb;
+    public Rigidbody2D rb { get; private set; }
     BoxCollider2D boxCollider;
     [SerializeField] Transform spawnPoint;
 

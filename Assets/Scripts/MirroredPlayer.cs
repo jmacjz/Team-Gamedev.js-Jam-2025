@@ -5,7 +5,7 @@ public class MirroredPlayer : MonoBehaviour
 {
     PlayerScript playerScript;
     GameObject player;
-    Rigidbody2D rb;
+    public Rigidbody2D rb { get; private set; }
     Rigidbody2D playerRb;
     BoxCollider2D boxCollider;
 
