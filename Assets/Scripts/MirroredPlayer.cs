@@ -110,6 +110,12 @@ public class MirroredPlayer : MonoBehaviour
         }
     }
 
+    public void ReleaseJump()
+    {
+        if(!IsGrounded(boxCollider))
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+    }
+
     public IEnumerator Invulnerability()
     {
         Physics2D.IgnoreLayerCollision(0, 9, true);

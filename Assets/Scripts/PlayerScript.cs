@@ -204,7 +204,8 @@ public class PlayerScript : MonoBehaviour
             if (context.canceled)
             {
                 // short hop mechanic
-                //rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+                mirrorScript.ReleaseJump();
                 coyoteTimeCount = 0f;
             }
 
