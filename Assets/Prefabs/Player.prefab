@@ -194,6 +194,7 @@ MonoBehaviour:
   jumpingPower: 15
   isWallSliding: 0
   isWallJump: 0
+  isClimbing: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -203,6 +204,9 @@ MonoBehaviour:
   trapLayer:
     serializedVersion: 2
     m_Bits: 512
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 0
   mirroredPlayer: {fileID: 8538856249285072492, guid: 5c934073f6f3c604b9831a73744654ff, type: 3}
   mirrored: 0
   canMove: 0
@@ -218,6 +222,7 @@ MonoBehaviour:
   canRestart: 0
   canChangeLevel: 0
   onHubDoor: 0
+  gameManager: {fileID: 6634151015041917314, guid: 06bea5fbfbefc574ab4ea90489495104, type: 3}
 --- !u!114 &120057019087830382
 MonoBehaviour:
   m_ObjectHideFlags: 0

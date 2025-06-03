@@ -63,7 +63,17 @@ public class PlayerScript : MonoBehaviour
     private bool interacting, canRestart, canChangeLevel, onHubDoor;
     private GameObject hubDoor = null;
 
-    
+    [SerializeField]
+    private GameObject gameManager;
+
+    void Awake()
+    {
+        if (GameObject.Find("GameManager") == null)
+        {
+            gameManager = Instantiate(gameManager, transform.position, transform.rotation);
+            gameManager.name = "GameManager";
+        }
+    }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -285,7 +295,8 @@ public class PlayerScript : MonoBehaviour
             canJump = false;
             spriteRend.enabled = false;
 
-            DeleteProjectiles();
+            DeleteTraps("Arrow");
+            DeleteTraps("ThrowableSpike");
         }
         dead = false;
     }
@@ -306,12 +317,8 @@ public class PlayerScript : MonoBehaviour
     {
         if (context.performed && canRestart)
         {
-            transform.position = spawnPoint.position;
-            mirroredPlayer.transform.position = mirroredPlayer.GetComponent<MirroredPlayer>().spawnPoint.position;
+            StartCoroutine(MoveToSpawn(0));
         }
-
-
-
     }
 
     public void Interact(InputAction.CallbackContext context)
@@ -376,13 +383,13 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void DeleteProjectiles()
+    private void DeleteTraps(string trapName)
     {
         GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Traps");
 
         foreach (GameObject trap in gameObjects)
         {
-            if (trap.name.Contains("Arrow"))
+            if (trap.name.Contains(trapName))
             {
                 Destroy(trap);
             }
@@ -423,6 +430,9 @@ public class PlayerScript : MonoBehaviour
             {
                 Debug.Log("Hit boss");
             }
+
+            col.gameObject.GetComponent<BossScript>().health--;
+            StartCoroutine(MoveToSpawn(1));
 
         }
     }
@@ -474,5 +484,13 @@ public class PlayerScript : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene("Level " + level);
+    }
+
+    public IEnumerator MoveToSpawn(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        transform.position = spawnPoint.position;
+        mirroredPlayer.transform.position = mirroredPlayer.GetComponent<MirroredPlayer>().spawnPoint.position;
+        DeleteTraps("ThrowableSpike");
     }
 }
