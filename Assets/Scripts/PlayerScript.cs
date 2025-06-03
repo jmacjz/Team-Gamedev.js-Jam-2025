@@ -33,10 +33,11 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private float jumpSpeed;
     [SerializeField] private float wallSlidingSpeed = 2f, wallJumpDir, wallJumpTime = 0.2f, wallJumpCount, wallJumpDur = 0.4f; public float jumpingPower = 15f;
-    public bool isWallSliding, isWallJump;
+    public bool isWallSliding, isWallJump, isClimbing;
+    private float climbSpeed = 10f;
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    public LayerMask groundLayer, wallLayer, trapLayer;
+    public LayerMask groundLayer, wallLayer, trapLayer, ladderLayer;
 
     public GameObject mirroredPlayer;
 
@@ -104,7 +105,7 @@ public class PlayerScript : MonoBehaviour
 
         WallSlide();
         ProcessWallJump();
-
+        
         if (dead == true)
         {
             DespawnPlayer();
@@ -143,6 +144,24 @@ public class PlayerScript : MonoBehaviour
             }
             
         }
+    }
+
+    private void FixedUpdate()
+    {
+        RaycastHit2D ladderCheck = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, ladderLayer);
+
+        if (ladderCheck.collider != null && vertical != 0)
+            isClimbing = true;
+        else if (Input.GetKey(KeyCode.Space) || ladderCheck.collider == null || IsGrounded())
+            isClimbing = false;
+
+        if (isClimbing)
+        {
+            rb.linearVelocity = new Vector2(0, vertical * climbSpeed);
+            rb.gravityScale = 0;
+        }
+        else
+            rb.gravityScale = 3;
     }
 
     public void Pause(InputAction.CallbackContext context)
@@ -198,7 +217,6 @@ public class PlayerScript : MonoBehaviour
                     SoundManager.instance.PlaySound(jumpSound);
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
                 jumpBufferCount = 0f;
-
             }
 
             if (context.canceled)
