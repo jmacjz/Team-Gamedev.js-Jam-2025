@@ -493,7 +493,7 @@ GameObject:
   - component: {fileID: 553469379}
   - component: {fileID: 553469378}
   m_Layer: 6
-  m_Name: Ground (2)
+  m_Name: Platform
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1679,7 +1679,7 @@ GameObject:
   - component: {fileID: 1995215743}
   - component: {fileID: 1995215742}
   m_Layer: 6
-  m_Name: Ground (3)
+  m_Name: Platform
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2086,6 +2086,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1620526979475868077, guid: 0b33be81814515045bd10b522281c82c, type: 3}
+      propertyPath: m_Name
+      value: LadderTopPlatform
+      objectReference: {fileID: 0}
     - target: {fileID: 6553678271187429732, guid: 0b33be81814515045bd10b522281c82c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 15.31
