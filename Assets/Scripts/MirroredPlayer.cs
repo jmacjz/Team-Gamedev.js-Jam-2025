@@ -12,13 +12,14 @@ public class MirroredPlayer : MonoBehaviour
     [SerializeField]
     private float jumpSpeed, wallSlidingSpeed;
     [SerializeField]
-    private LayerMask groundLayer, wallLayer, trapLayer;
+    private LayerMask groundLayer, wallLayer, trapLayer, ladderLayer;
     [SerializeField]
-    private bool isFacingRight, isWallSliding, isWallJump;
+    private bool isFacingRight, isWallSliding, isWallJump, isClimbing;
 
     [SerializeField] private float wallJumpDir, wallJumpTime = 0.2f, wallJumpCount, wallJumpDur = 0.4f; public float jumpingPower = 15f;
     
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+    private float climbSpeed = 10f;
 
     public bool canMove, canJump, hitBoss;
 
@@ -51,7 +52,7 @@ public class MirroredPlayer : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         canMove = true;
         canJump = true;
-        playerScript = GetComponent<PlayerScript>();
+        playerScript = player.GetComponent<PlayerScript>();
         currentHealth = startingHealth;
         spriteRend = GetComponent<SpriteRenderer>();
     }
@@ -80,6 +81,24 @@ public class MirroredPlayer : MonoBehaviour
             Flip();
         }
         
+    }
+
+    private void FixedUpdate()
+    {
+        RaycastHit2D ladderCheck = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, ladderLayer);
+
+        if (ladderCheck.collider != null && playerScript.vertical != 0)
+            isClimbing = true;
+        else if (Input.GetKey(KeyCode.Space) || ladderCheck.collider == null || IsGrounded(boxCollider))
+            isClimbing = false;
+
+        if (isClimbing)
+        {
+            rb.linearVelocity = new Vector2(0, playerScript.vertical * climbSpeed);
+            rb.gravityScale = 0;
+        }
+        else
+            rb.gravityScale = 3;
     }
 
     public void Jump()
