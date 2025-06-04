@@ -827,6 +827,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4594481021363707536, guid: 094f5647661a7874488603e8e87dd302, type: 3}
+      propertyPath: coyoteTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4594481021363707536, guid: 094f5647661a7874488603e8e87dd302, type: 3}
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 701091279}
@@ -1538,9 +1542,13 @@ MonoBehaviour:
   trapLayer:
     serializedVersion: 2
     m_Bits: 512
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 32768
   isFacingRight: 0
   isWallSliding: 0
   isWallJump: 0
+  isClimbing: 0
   wallJumpDir: 0
   wallJumpTime: 0.2
   wallJumpCount: 0
