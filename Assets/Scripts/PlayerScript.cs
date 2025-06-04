@@ -32,12 +32,10 @@ public class PlayerScript : MonoBehaviour
     private float speed;
     [SerializeField]
     private float jumpSpeed;
-    [SerializeField] private float wallSlidingSpeed = 2f, wallJumpDir, wallJumpTime = 0.2f, wallJumpCount, wallJumpDur = 0.4f; public float jumpingPower = 15f;
-    public bool isWallSliding, isWallJump, isClimbing;
+    public bool isClimbing;
     private float climbSpeed = 10f;
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    public LayerMask groundLayer, wallLayer, trapLayer, ladderLayer;
+    public LayerMask groundLayer, trapLayer, ladderLayer;
 
     public GameObject mirroredPlayer;
 
@@ -114,9 +112,6 @@ public class PlayerScript : MonoBehaviour
         {
             StartCoroutine(ChangeScene(hubDoor.GetComponent<HubDoor>().level));
         }
-
-        WallSlide();
-        ProcessWallJump();
         
         if (dead == true)
         {
@@ -124,7 +119,7 @@ public class PlayerScript : MonoBehaviour
             StartCoroutine(RespawnPlayer());
         }
 
-        if (!isWallJump && canMove)
+        if (canMove)
         {
             if (IsGrounded())
             {
@@ -245,25 +240,6 @@ public class PlayerScript : MonoBehaviour
                     coyoteTimeCount = 0f;
                 }
             }
-
-            // wall jump
-            if (context.performed && wallJumpCount > 0f)
-            {
-                isWallJump = true;
-                rb.linearVelocity = new Vector2(wallJumpDir * wallJumpingPower.x, wallJumpingPower.y); //jump away from wall
-                wallJumpCount = 0;
-
-                // Force Flip
-                if (transform.localScale.x != wallJumpDir)
-                {
-                    isFacingRight = !isFacingRight;
-                    Vector2 localScale = transform.localScale;
-                    localScale.x *= -1f;
-                    transform.localScale = localScale;
-                }
-
-                Invoke(nameof(CancelWallJump), wallJumpDur); // Wall jump + 0.5f -- Jump again = 0.6f
-            }
         }
     }
 
@@ -345,41 +321,6 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-
-    private void WallSlide()
-    {
-        if (IsWalled() && !IsGrounded() && horizontal != 0f)
-        {
-            print("Sliding");
-            isWallSliding = true;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Max(rb.linearVelocity.y, -wallSlidingSpeed));
-        }
-        else
-        {
-            isWallSliding = false;
-        }
-    }
-
-    private void ProcessWallJump()
-    {
-        if (isWallSliding)
-        {
-            isWallJump = false;
-            wallJumpDir = -transform.localScale.x;
-            wallJumpCount = wallJumpTime;
-
-            CancelInvoke(nameof(CancelWallJump));
-        }
-        else if (wallJumpCount > 0f)
-        {
-            wallJumpCount -= Time.deltaTime;
-        }
-    }
-
-    private void CancelWallJump()
-    {
-        isWallJump = false;
-    }
 
     private void Flip()
     {
@@ -483,20 +424,6 @@ public class PlayerScript : MonoBehaviour
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.05f, groundLayer);
         if (hit.collider != null)
         {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public bool IsWalled()
-    {
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, transform.localScale, 0.05f, wallLayer);
-        if (hit.collider != null)
-        {
-            print("Walled");
             return true;
         }
         else

@@ -10,15 +10,12 @@ public class MirroredPlayer : MonoBehaviour
     BoxCollider2D boxCollider;
 
     [SerializeField]
-    private float jumpSpeed, wallSlidingSpeed;
+    private float jumpSpeed;
     [SerializeField]
     private LayerMask groundLayer, wallLayer, trapLayer, ladderLayer;
     [SerializeField]
     private bool isFacingRight, isWallSliding, isWallJump, isClimbing;
-
-    [SerializeField] private float wallJumpDir, wallJumpTime = 0.2f, wallJumpCount, wallJumpDur = 0.4f; public float jumpingPower = 15f;
     
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
     private float climbSpeed = 10f;
 
     public bool canMove, canJump, hitBoss;
@@ -62,17 +59,13 @@ public class MirroredPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        WallSlide();
-        ProcessWallJump();
-
         if (dead == true)
         {
             DespawnPlayer();
             StartCoroutine(RespawnPlayer());
         }
 
-        if (!isWallJump && canMove)
+        if (canMove)
         {   
             rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y); 
                 
@@ -111,24 +104,6 @@ public class MirroredPlayer : MonoBehaviour
             if(SoundManager.instance != null)
                 SoundManager.instance.PlaySound(jumpSound);
             rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, jumpSpeed);
-        }
-
-        if (wallJumpCount > 0f)
-        {
-            isWallJump = true;
-            rb.linearVelocity = new Vector2(wallJumpDir * wallJumpingPower.x, wallJumpingPower.y); //jump away from wall
-            wallJumpCount = 0;
-
-            // Force Flip
-            if (transform.localScale.x != wallJumpDir)
-            {
-                isFacingRight = !isFacingRight;
-                Vector2 localScale = transform.localScale;
-                localScale.x *= -1f;
-                transform.localScale = localScale;
-            }
-
-            Invoke(nameof(CancelWallJump), wallJumpDur); // Wall jump + 0.5f -- Jump again = 0.6f
         }
     }
 
@@ -191,43 +166,7 @@ public class MirroredPlayer : MonoBehaviour
             canMove = true;
         }
     }
-
-
-    private void WallSlide()
-    {
-        if (IsWalled(boxCollider) && !IsGrounded(boxCollider))
-        {
-            print("Mirror Sliding");
-            isWallSliding = true;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
-        }
-        else
-        {
-            isWallSliding = false;
-        }
-    }
-
-    private void ProcessWallJump()
-    {
-        if (isWallSliding)
-        {
-            isWallJump = false;
-            wallJumpDir = -transform.localScale.x;
-            wallJumpCount = wallJumpTime;
-
-            CancelInvoke(nameof(CancelWallJump));
-        }
-        else if (wallJumpCount > 0f)
-        {
-            wallJumpCount -= Time.deltaTime;
-        }
-    }
-
-    private void CancelWallJump()
-    {
-        isWallJump = false;
-    }
-
+    
 
 
 
@@ -309,20 +248,6 @@ public class MirroredPlayer : MonoBehaviour
         else
             return false;
 
-    }
-
-    public bool IsWalled(BoxCollider2D boxCollider)
-    {
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, transform.localScale, 0.05f, wallLayer);
-        if (hit.collider != null)
-        {
-            print("Mirror Walled");
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     public IEnumerator DisablePlatformCollider(BoxCollider2D platformCollider)
