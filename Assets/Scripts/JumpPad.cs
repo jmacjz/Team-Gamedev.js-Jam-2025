@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class JumpPadScript : MonoBehaviour
 {
@@ -12,4 +13,6 @@ public class JumpPadScript : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * bounce, ForceMode2D.Impulse);
         }
     }
+
+   
 }

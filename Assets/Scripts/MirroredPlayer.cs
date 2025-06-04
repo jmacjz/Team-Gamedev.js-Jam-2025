@@ -40,6 +40,8 @@ public class MirroredPlayer : MonoBehaviour
     [SerializeField]
     private AudioClip jumpSound, deathSound;
 
+    private bool canVaryJump;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -71,16 +73,17 @@ public class MirroredPlayer : MonoBehaviour
         }
 
         if (!isWallJump && canMove)
-        {
-
-            
-            rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
-           
-            
+        {   
+            rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y); 
                 
             Flip();
         }
-        
+
+        if (!canVaryJump && IsGrounded(boxCollider))
+        {
+            canVaryJump = true;
+        }
+
     }
 
     private void FixedUpdate()
@@ -131,7 +134,7 @@ public class MirroredPlayer : MonoBehaviour
 
     public void ReleaseJump()
     {
-        if(!IsGrounded(boxCollider))
+        if(!IsGrounded(boxCollider) && canVaryJump)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
     }
 
@@ -249,6 +252,11 @@ public class MirroredPlayer : MonoBehaviour
         {
             hitBoss = true;
         }
+
+        if (col.gameObject.name.Contains("JumpPad"))
+        {
+            canVaryJump = false;
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -280,6 +288,17 @@ public class MirroredPlayer : MonoBehaviour
         }
     }
 
+    void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.name.Contains("Platform"))
+        {
+            if (playerScript.vertical < 0)
+            {
+                StartCoroutine(DisablePlatformCollider(col.gameObject.GetComponent<BoxCollider2D>()));
+            }
+        }
+    }
+
     public bool IsGrounded(BoxCollider2D boxCollider)
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.05f, groundLayer);
@@ -304,6 +323,13 @@ public class MirroredPlayer : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public IEnumerator DisablePlatformCollider(BoxCollider2D platformCollider)
+    {
+        platformCollider.enabled = false;
+        yield return new WaitForSeconds(0.5f);
+        platformCollider.enabled = true;
     }
 
 }

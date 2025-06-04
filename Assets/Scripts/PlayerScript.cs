@@ -66,6 +66,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private GameObject gameManager;
 
+    public bool canVaryJump;
+
     void Awake()
     {
         if (GameObject.Find("GameManager") == null)
@@ -141,6 +143,10 @@ public class PlayerScript : MonoBehaviour
             Flip();
         }
 
+        if (!canVaryJump && IsGrounded())
+        {
+            canVaryJump = true;
+        }
 
 
 
@@ -232,9 +238,12 @@ public class PlayerScript : MonoBehaviour
             if (context.canceled)
             {
                 // short hop mechanic
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
                 mirrorScript.ReleaseJump();
-                coyoteTimeCount = 0f;
+                if (canVaryJump)
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+                    coyoteTimeCount = 0f;
+                }
             }
 
             // wall jump
@@ -446,6 +455,11 @@ public class PlayerScript : MonoBehaviour
             StartCoroutine(MoveToSpawn(1));
 
         }
+
+        if (col.gameObject.name.Contains("JumpPad"))
+        {
+            canVaryJump = false;
+        }
     }
 
     void OnTriggerExit2D(Collider2D col)
@@ -511,4 +525,6 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         platformCollider.enabled = true;
     }
+
+    
 }

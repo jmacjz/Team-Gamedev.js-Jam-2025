@@ -223,6 +223,7 @@ MonoBehaviour:
   canChangeLevel: 0
   onHubDoor: 0
   gameManager: {fileID: 6634151015041917314, guid: 06bea5fbfbefc574ab4ea90489495104, type: 3}
+  canVaryJump: 1
 --- !u!114 &120057019087830382
 MonoBehaviour:
   m_ObjectHideFlags: 0
