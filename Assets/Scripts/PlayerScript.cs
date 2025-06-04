@@ -405,6 +405,17 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    void OnCollisionStay2D(Collision2D col)
+    {
+        if (col.gameObject.name.Contains("Platform"))
+        {
+            if (vertical < 0)
+            {
+                StartCoroutine(DisablePlatformCollider(col.gameObject.GetComponent<BoxCollider2D>()));
+            }
+        }
+    }
+
     void OnCollisionExit2D(Collision2D col)
     {
         if (col.gameObject.name.Contains("Moving Platform"))
@@ -492,5 +503,12 @@ public class PlayerScript : MonoBehaviour
         transform.position = spawnPoint.position;
         mirroredPlayer.transform.position = mirroredPlayer.GetComponent<MirroredPlayer>().spawnPoint.position;
         DeleteTraps("ThrowableSpike");
+    }
+
+    public IEnumerator DisablePlatformCollider(BoxCollider2D platformCollider)
+    {
+        platformCollider.enabled = false;
+        yield return new WaitForSeconds(0.5f);
+        platformCollider.enabled = true;
     }
 }
