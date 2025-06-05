@@ -188,7 +188,7 @@ MonoBehaviour:
   isClimbing: 0
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 65600
   trapLayer:
     serializedVersion: 2
     m_Bits: 512

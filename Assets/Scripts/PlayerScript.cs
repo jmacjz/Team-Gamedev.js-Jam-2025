@@ -119,6 +119,22 @@ public class PlayerScript : MonoBehaviour
             StartCoroutine(RespawnPlayer());
         }
 
+        
+
+        if (inDoor && mirrorScript.inDoor == true && !beatLevel)
+        {
+            if (GameObject.Find("GameManager") != null)
+            {
+                GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
+                gameScript.beatLevel = true;
+                beatLevel = true;
+            }
+
+        }
+    }
+
+    private void FixedUpdate()
+    {
         if (canMove)
         {
             if (IsGrounded())
@@ -131,9 +147,9 @@ public class PlayerScript : MonoBehaviour
             }
 
 
-            
-           rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
-            
+
+            rb.linearVelocity = new Vector2(horizontal * speed, rb.linearVelocity.y);
+
 
             Flip();
         }
@@ -143,22 +159,18 @@ public class PlayerScript : MonoBehaviour
             canVaryJump = true;
         }
 
-
-
-        if (inDoor && mirrorScript.inDoor == true && !beatLevel)
+        if (rb.linearVelocity.y > 0)
         {
-            if (GameObject.Find("GameManager") != null)
-            {
-                GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
-                gameScript.beatLevel = true;
-                beatLevel = true;
-            }
-            
+            Physics2D.IgnoreLayerCollision(12, 16);
+            if (rb.linearVelocity.y != 0)
+                canJump = false;
         }
-    }
+        if (rb.linearVelocity.y < 0)
+        {
+            Physics2D.IgnoreLayerCollision(12, 16, false);
+            canJump = true;
+        }
 
-    private void FixedUpdate()
-    {
         RaycastHit2D ladderCheck = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, ladderLayer);
 
         if (ladderCheck.collider != null && vertical != 0)
@@ -207,38 +219,39 @@ public class PlayerScript : MonoBehaviour
     public void Jump(InputAction.CallbackContext context)
     {
 
-        if (canJump)
+        // jump
+        if (context.performed)
         {
-            // jump
-            if (context.performed)
-            {
+            if(canJump)
                 jumpBufferCount = jumpBufferTime;
-                mirrorScript.Jump();
-            }
-            else
-            {
-                print("Jump Buffer Else");
-                jumpBufferCount -= Time.deltaTime;
-            }
+            mirrorScript.Jump();
+        }
+        else
+        {
+            print("Jump Buffer Else");
+            jumpBufferCount -= Time.deltaTime;
+        }
 
-            if (jumpBufferCount > 0f && coyoteTimeCount > 0f)
-            {
+        if (jumpBufferCount > 0f && coyoteTimeCount > 0f && canJump)
+        {
 
-                if(SoundManager.instance != null)
-                    SoundManager.instance.PlaySound(jumpSound);
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
-                jumpBufferCount = 0f;
-            }
+            if(SoundManager.instance != null)
+                SoundManager.instance.PlaySound(jumpSound);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
+            jumpBufferCount = 0f;
+        }
 
-            if (context.canceled)
+            
+        
+
+        if (context.canceled)
+        {
+            // short hop mechanic
+            mirrorScript.ReleaseJump();
+            if (canVaryJump)
             {
-                // short hop mechanic
-                mirrorScript.ReleaseJump();
-                if (canVaryJump)
-                {
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
-                    coyoteTimeCount = 0f;
-                }
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+                coyoteTimeCount = 0f;
             }
         }
     }

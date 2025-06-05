@@ -39,8 +39,6 @@ public class MirroredPlayer : MonoBehaviour
 
     private bool canVaryJump;
 
-
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -65,10 +63,27 @@ public class MirroredPlayer : MonoBehaviour
             StartCoroutine(RespawnPlayer());
         }
 
+        
+    }
+
+    private void FixedUpdate()
+    {
+        if (rb.linearVelocity.y > 0)
+        {
+            Physics2D.IgnoreLayerCollision(17, 16);
+            if (rb.linearVelocity.y != 0)
+                canJump = false;
+        }
+        if (rb.linearVelocity.y < 0)
+        {
+            Physics2D.IgnoreLayerCollision(17, 16, false);
+            canJump = true;
+        }
+
         if (canMove)
-        {   
-            rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y); 
-                
+        {
+            rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
+
             Flip();
         }
 
@@ -77,10 +92,6 @@ public class MirroredPlayer : MonoBehaviour
             canVaryJump = true;
         }
 
-    }
-
-    private void FixedUpdate()
-    {
         RaycastHit2D ladderCheck = Physics2D.Raycast(transform.position, Vector2.up, 0.5f, ladderLayer);
 
         if (ladderCheck.collider != null && playerScript.vertical != 0)
@@ -99,7 +110,7 @@ public class MirroredPlayer : MonoBehaviour
 
     public void Jump()
     {
-        if (IsGrounded(boxCollider) && canMove)
+        if (IsGrounded(boxCollider) && canMove && canJump)
         {
             if(SoundManager.instance != null)
                 SoundManager.instance.PlaySound(jumpSound);
