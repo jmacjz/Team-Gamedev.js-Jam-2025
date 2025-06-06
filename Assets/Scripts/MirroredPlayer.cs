@@ -82,7 +82,7 @@ public class MirroredPlayer : MonoBehaviour
 
         if (canMove)
         {
-            rb.linearVelocity = new Vector2(-playerRb.linearVelocity.x, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(-playerScript.horizontal * 10, rb.linearVelocity.y);
 
             Flip();
         }

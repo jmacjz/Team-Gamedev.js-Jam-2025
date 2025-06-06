@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
-    float horizontal;
+    public float horizontal;
     public float vertical { get; private set; }
     public bool isFacingRight = true;
     public Rigidbody2D rb { get; private set; }
