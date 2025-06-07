@@ -18,6 +18,7 @@ public class MovingPlatform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (Vector2.Distance(transform.position, points[i].position) < 0.02f)
         {
             i++;
@@ -32,12 +33,14 @@ public class MovingPlatform : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        col.transform.SetParent(transform);
+        if(gameObject.activeInHierarchy)
+            col.transform.SetParent(transform);
     }
 
     void OnCollisionExit2D(Collision2D col)
     {
-        col.transform.SetParent(null);
+        if (gameObject.activeInHierarchy)
+            col.transform.SetParent(null);
     }
  
 
