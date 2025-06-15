@@ -358,7 +358,7 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
-
+    
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.name.Contains("Moving Platform"))

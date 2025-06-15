@@ -308,9 +308,9 @@ GameObject:
   - component: {fileID: 534104732}
   - component: {fileID: 534104731}
   - component: {fileID: 534104730}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: Mirrored Player
-  m_TagString: Untagged
+  m_TagString: Mirrored Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -330,7 +330,7 @@ MonoBehaviour:
   jumpSpeed: 15
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 65600
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -715,6 +715,10 @@ PrefabInstance:
     - target: {fileID: 4982108240276696758, guid: 3961d0e2643726642bece6991fa52b04, type: 3}
       propertyPath: m_Name
       value: Platform
+      objectReference: {fileID: 0}
+    - target: {fileID: 4982108240276696758, guid: 3961d0e2643726642bece6991fa52b04, type: 3}
+      propertyPath: m_Layer
+      value: 16
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
