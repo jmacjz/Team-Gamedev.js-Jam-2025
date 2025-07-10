@@ -10,13 +10,20 @@ public class GameScript : MonoBehaviour
 
     public int levelsBeaten = 1;
 
+    public int sceneCount;
+
     private GameObject player;
 
     public static GameScript Instance;
 
+    [SerializeField]
+    private int currentLevel = 1;
+
+    private bool beatScene = false;
 
     void Awake()
     {
+        currentLevel = 1;
         levelsBeaten = LoadLevelsBeaten();
         if (Instance == null)
         {
@@ -32,18 +39,33 @@ public class GameScript : MonoBehaviour
     {
         Scene scene = SceneManager.GetActiveScene();
 
-        if(scene.name.Contains("Level ") && beatLevel)
+        if (beatLevel && currentLevel == 3)
         {
-          
-            if (scene.name == "Level " + (levelsBeaten + 1))
+
+            /*if (scene.name == "Level " + (levelsBeaten + 1))
             {
                 levelsBeaten++;
                 SaveLevelsBeaten(levelsBeaten);
             }
             
-            beatLevel = false;
-            StartCoroutine(SceneTransition());
             
+            */
+
+            beatLevel = false;
+            StartCoroutine(SceneTransition("Levels"));
+        }
+
+        else if(beatLevel && currentLevel <= 3)
+        {
+            if (beatScene == false)
+            {
+                currentLevel++;
+                beatScene = true;
+            }
+
+            string sceneName = scene.name.Remove(scene.name.Length - 1, 1) + currentLevel;
+            beatLevel = false;
+            StartCoroutine(SceneTransition(sceneName));
         }
 
 
@@ -60,11 +82,11 @@ public class GameScript : MonoBehaviour
         return PlayerPrefs.GetInt("LevelsBeaten", 0);
     }
 
-
-    private IEnumerator SceneTransition()
+    private IEnumerator SceneTransition(string scene)
     {
         yield return new WaitForSeconds(1);
-        SceneManager.LoadScene("Levels");
+        SceneManager.LoadScene(scene);
+        beatScene = false;
     }
 
 }
