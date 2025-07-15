@@ -110,24 +110,24 @@ public class PlayerScript : MonoBehaviour
 
         if (onHubDoor && hubDoor != null && hubDoor.GetComponent<HubDoor>().locked == false && interacting)
         {
-            StartCoroutine(ChangeScene(hubDoor.GetComponent<HubDoor>().level));
+            StartCoroutine(ChangeScene(hubDoor.GetComponent<HubDoor>().sceneName));
         }
         
-        if (dead == true)
+        if (dead)
         {
             DespawnPlayer();
             StartCoroutine(RespawnPlayer());
         }
-
-        
 
         if (inDoor && mirrorScript.inDoor == true && !beatLevel)
         {
             if (GameObject.Find("GameManager") != null)
             {
                 GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
+                gameScript.currentBeatenLevel = int.Parse(scene.name.Substring(2, 1));
                 gameScript.beatLevel = true;
                 beatLevel = true;
+                    
             }
 
         }
@@ -445,10 +445,10 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public IEnumerator ChangeScene(int level)
+    public IEnumerator ChangeScene(string sceneName)
     {
         yield return new WaitForSeconds(1);
-        SceneManager.LoadScene("Level " + level);
+        SceneManager.LoadScene(sceneName);
     }
 
     public IEnumerator MoveToSpawn(float delay)

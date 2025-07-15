@@ -5,6 +5,7 @@ public class HubDoor : MonoBehaviour
     public bool locked = true;
     public GameScript gameScript;
     public int level;
+    public string sceneName; 
     public Color unlockedColor;
     public Color lockedColor;
     private SpriteRenderer spriteRenderer;

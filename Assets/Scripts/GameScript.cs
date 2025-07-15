@@ -10,6 +10,8 @@ public class GameScript : MonoBehaviour
 
     public int levelsBeaten = 1;
 
+    public int currentBeatenLevel;
+    private int lastLevel = 1;
     public int sceneCount;
 
     private GameObject player;
@@ -39,17 +41,21 @@ public class GameScript : MonoBehaviour
     {
         Scene scene = SceneManager.GetActiveScene();
 
-        if (beatLevel && currentLevel == 3)
+        if (scene.name.Contains("-"))
+        {
+            int mapNumber = int.Parse(scene.name.Substring(0, 1));
+            int levelNumber = int.Parse(scene.name.Substring(2, 1));
+            lastLevel = GetSceneCountForLevel(mapNumber, levelNumber);
+        }        
+
+        if (beatLevel && currentLevel == lastLevel)
         {
 
-            /*if (scene.name == "Level " + (levelsBeaten + 1))
+            if (currentBeatenLevel == levelsBeaten + 1)
             {
                 levelsBeaten++;
                 SaveLevelsBeaten(levelsBeaten);
             }
-            
-            
-            */
 
             beatLevel = false;
             StartCoroutine(SceneTransition("Levels"));
@@ -69,6 +75,27 @@ public class GameScript : MonoBehaviour
         }
 
 
+    }
+
+    public int GetSceneCountForLevel(int mapNumber, int levelNumber)
+    {
+        int count = 0;
+        bool canLoadScene = true;
+        
+        while (canLoadScene)
+        {
+            string sceneName = mapNumber + "-" + levelNumber + "-" + (count + 1);
+            if (Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                count++;
+            }
+            else 
+            {
+                canLoadScene = false;
+            }
+        }
+
+        return count;
     }
 
     void SaveLevelsBeaten(int levelsBeaten)
