@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour
     public float vertical { get; private set; }
     public bool isFacingRight = true;
     public Rigidbody2D rb { get; private set; }
+    Animator animator;
     BoxCollider2D boxCollider;
     [SerializeField] Transform spawnPoint;
 
@@ -46,7 +47,6 @@ public class PlayerScript : MonoBehaviour
     BoxCollider2D mirrorCollider;
     MirroredPlayer mirrorScript; // script for mirrored player
 
-    public bool onMovingPlatform;
     private GameObject movingPlatform;
 
     [SerializeField]
@@ -66,6 +66,8 @@ public class PlayerScript : MonoBehaviour
 
     public bool canVaryJump;
 
+    private float doorCount;
+
     void Awake()
     {
         if (GameObject.Find("GameManager") == null)
@@ -84,8 +86,11 @@ public class PlayerScript : MonoBehaviour
         canMove = true;
         canJump = true;
 
+        doorCount = 0;
+
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        animator = GetComponentInChildren<Animator>();
         mirrorRb = mirroredPlayer.GetComponent<Rigidbody2D>();
         mirrorCollider = mirroredPlayer.GetComponent<BoxCollider2D>();
         mirrorScript = mirroredPlayer.GetComponent<MirroredPlayer>();
@@ -121,13 +126,15 @@ public class PlayerScript : MonoBehaviour
 
         if (inDoor && mirrorScript.inDoor == true && !beatLevel)
         {
-            if (GameObject.Find("GameManager") != null)
+            doorCount++;
+            if (GameObject.Find("GameManager") != null && doorCount > 40)
             {
                 GameScript gameScript = GameObject.Find("GameManager").GetComponent<GameScript>();
                 gameScript.currentBeatenLevel = int.Parse(scene.name.Substring(2, 1));
                 gameScript.beatLevel = true;
                 beatLevel = true;
-                    
+                StartCoroutine(PlayWinAnimation());
+                doorCount = 0;
             }
 
         }
@@ -306,8 +313,7 @@ public class PlayerScript : MonoBehaviour
             yield return new WaitForSeconds(1);
             gameObject.transform.position = spawnPoint.position;
             spriteRend.enabled = true;
-            canJump = true;
-            canMove = true;
+            ResetBools();
         }
     }
 
@@ -330,7 +336,6 @@ public class PlayerScript : MonoBehaviour
         {
             interacting = false;
         }
-
 
     }
 
@@ -364,7 +369,6 @@ public class PlayerScript : MonoBehaviour
         if (col.gameObject.name.Contains("Moving Platform"))
         {
             movingPlatform = col.gameObject;
-            onMovingPlatform = true;
         }
     }
 
@@ -376,14 +380,6 @@ public class PlayerScript : MonoBehaviour
             {
                 StartCoroutine(DisablePlatformCollider(col.gameObject.GetComponent<BoxCollider2D>()));
             }
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D col)
-    {
-        if (col.gameObject.name.Contains("Moving Platform"))
-        {
-            onMovingPlatform = false;
         }
     }
 
@@ -421,6 +417,7 @@ public class PlayerScript : MonoBehaviour
         if (col.gameObject.layer == 10)
         {
             inDoor = false;
+            doorCount = 0;
         }
 
         if (col.gameObject.layer == 13)
@@ -445,6 +442,13 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public void ResetBools()
+    {
+        canJump = true;
+        canMove = true;
+        isClimbing = false;
+    }
+
     public IEnumerator ChangeScene(string sceneName)
     {
         yield return new WaitForSeconds(1);
@@ -456,14 +460,40 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(delay);
         transform.position = spawnPoint.position;
         mirroredPlayer.transform.position = mirroredPlayer.GetComponent<MirroredPlayer>().spawnPoint.position;
+        ResetBools();
         DeleteTraps("ThrowableSpike");
     }
+
 
     public IEnumerator DisablePlatformCollider(BoxCollider2D platformCollider)
     {
         platformCollider.enabled = false;
         yield return new WaitForSeconds(0.5f);
         platformCollider.enabled = true;
+    }
+
+    public IEnumerator PlayWinAnimation()
+    {
+        StartCoroutine(mirrorScript.PlayWinAnimation());
+        
+
+        Vector3 originalScale = transform.localScale;
+        Vector3 targetScale = originalScale * 0.5f;
+        float spinDuration = 1f;
+
+        rb.constraints = RigidbodyConstraints2D.FreezePosition;
+        float elapsed = 0f;
+        while (elapsed < spinDuration)
+        {
+            float t = elapsed / spinDuration;
+            float rotationAmount = 360f * Time.deltaTime;
+            transform.Rotate(0f, 0f, rotationAmount);
+
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        
     }
 
     

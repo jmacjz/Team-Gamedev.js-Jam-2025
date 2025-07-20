@@ -192,6 +192,26 @@ public class MirroredPlayer : MonoBehaviour
         }
     }
 
+    public IEnumerator PlayWinAnimation()
+    {
+        Vector3 originalScale = transform.localScale;
+        Vector3 targetScale = originalScale * 0.5f;
+        float spinDuration = 1f;
+
+        rb.constraints = RigidbodyConstraints2D.FreezePosition;
+        float elapsed = 0f;
+        while (elapsed < spinDuration)
+        {
+            float t = elapsed / spinDuration;
+            float rotationAmount = 360f * Time.deltaTime;
+            transform.Rotate(0f, 0f, rotationAmount);
+
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.layer == 11)
