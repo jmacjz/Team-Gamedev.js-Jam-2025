@@ -13,7 +13,7 @@ public class ArrowSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        InvokeRepeating("ShootArrow", 3f, arrowInterval);
+        InvokeRepeating("ShootArrow", 1f, arrowInterval);
         if (projectileSpeed < 0)
             offset = -1;
         else 
