@@ -120,6 +120,7 @@ public class PlayerScript : MonoBehaviour
         
         if (dead)
         {
+            boxCollider.enabled = false;
             DespawnPlayer();
             StartCoroutine(RespawnPlayer());
         }
@@ -310,7 +311,9 @@ public class PlayerScript : MonoBehaviour
     {
         if (dead == false)
         {
+
             yield return new WaitForSeconds(1);
+            boxCollider.enabled = true;
             gameObject.transform.position = spawnPoint.position;
             spriteRend.enabled = true;
             ResetBools();
@@ -381,6 +384,7 @@ public class PlayerScript : MonoBehaviour
                 StartCoroutine(DisablePlatformCollider(col.gameObject.GetComponent<BoxCollider2D>()));
             }
         }
+
     }
 
     void OnTriggerEnter2D(Collider2D col)
