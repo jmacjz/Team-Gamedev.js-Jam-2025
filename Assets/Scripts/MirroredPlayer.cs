@@ -14,7 +14,8 @@ public class MirroredPlayer : MonoBehaviour
     [SerializeField]
     private LayerMask groundLayer, wallLayer, trapLayer, ladderLayer;
     [SerializeField]
-    private bool isFacingRight, isWallSliding, isWallJump, isClimbing;
+    private bool isFacingRight;
+    public bool isClimbing;
     
     private float climbSpeed = 10f;
 

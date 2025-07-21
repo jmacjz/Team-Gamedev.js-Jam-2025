@@ -376,7 +376,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (col.gameObject.name.Contains("Platform"))
         {
-            if (vertical < 0)
+            if (vertical < 0 && !isClimbing)
             {
                 StartCoroutine(DisablePlatformCollider(col.gameObject.GetComponent<BoxCollider2D>()));
             }
@@ -447,6 +447,9 @@ public class PlayerScript : MonoBehaviour
         canJump = true;
         canMove = true;
         isClimbing = false;
+        mirrorScript.canMove = true;
+        mirrorScript.isClimbing = false;
+        mirrorScript.canJump = true;
     }
 
     public IEnumerator ChangeScene(string sceneName)
