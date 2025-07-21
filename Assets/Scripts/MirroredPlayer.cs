@@ -263,7 +263,7 @@ public class MirroredPlayer : MonoBehaviour
     {
         if (col.gameObject.name.Contains("Platform"))
         {
-            if (playerScript.vertical < 0)
+            if (playerScript.vertical < 0 && !isClimbing)
             {
                 StartCoroutine(DisablePlatformCollider(col.gameObject.GetComponent<BoxCollider2D>()));
             }
